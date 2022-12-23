@@ -1,4 +1,4 @@
-# allkeyshop-api
+# AllKeyShop API
 Unofficial AllKeyShop API in typescript
 
 ## Features

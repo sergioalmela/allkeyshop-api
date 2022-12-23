@@ -12,7 +12,7 @@
     "build": "tsc",
     "lint": "ts-standard",
     "lint:fix": "ts-standard --fix",
-    "test": "jest --verbose"
+    "test": "npm run build && jest --verbose"
   },
   "repository": {
     "type": "git",

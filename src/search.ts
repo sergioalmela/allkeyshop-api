@@ -17,7 +17,7 @@ const getProductIds = async (name: string): Promise<ProductIdsResponse> => {
   try {
     const games = await fetchAllGames()
 
-    if (games) {
+    if (games != null) {
       // Search for the game name inside the array of games
       const filteredGames = games.filter((game) => game.name.toLowerCase().includes(name.toLowerCase()))
 

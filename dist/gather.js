@@ -17,7 +17,7 @@ const axios_1 = __importDefault(require("axios"));
 const search_1 = require("./search");
 const getGameData = (name) => __awaiter(void 0, void 0, void 0, function* () {
     const gameList = yield (0, search_1.getProductIds)(name);
-    if (gameList.games) {
+    if (gameList.games !== undefined && gameList.games.length > 0) {
         const gameId = gameList.games[0].id;
         const response = yield axios_1.default.get(`https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameId}&currency=eur`);
         return response.data;

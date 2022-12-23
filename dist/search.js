@@ -16,7 +16,7 @@ const getProductIds = (name) => __awaiter(void 0, void 0, void 0, function* () {
     // Read vaks.json file and search for the game name inside games.name
     try {
         const games = yield (0, fetch_1.fetchAllGames)();
-        if (games) {
+        if (games != null) {
             // Search for the game name inside the array of games
             const filteredGames = games.filter((game) => game.name.toLowerCase().includes(name.toLowerCase()));
             return {
