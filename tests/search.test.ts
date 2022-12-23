@@ -1,4 +1,4 @@
-import {getProductIds} from '../src/search'
+import { getProductIds } from '../src/search'
 
 const GAME_NAME = 'FIFA 22'
 const WRONG_NAME = '__________'
@@ -7,6 +7,7 @@ jest.setTimeout(20000)
 
 test('search product and get the IDs', async () => {
   const response = await getProductIds(GAME_NAME)
+  console.log(response)
   expect(response.status).toBe('success')
   expect(response.games.length).toBeGreaterThan(0)
 
