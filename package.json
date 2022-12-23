@@ -1,0 +1,46 @@
+{
+  "name": "allkeyshop-api",
+  "version": "0.1",
+  "description": "Unofficial Allkeyshop API",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepare": "npm run build",
+    "build": "tsc",
+    "lint": "ts-standard",
+    "lint:fix": "ts-standard --fix",
+    "test": "jest --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sergioalmela/allkeyshop-api"
+  },
+  "keywords": [
+    "allkeyshop.com",
+    "www.allkeyshop.com",
+    "api"
+  ],
+  "author": "Sergio Almela",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/sergioalmela/allkeyshop-api/issues"
+  },
+  "homepage": "https://github.com/sergioalmela/allkeyshop-api",
+  "dependencies": {
+    "axios": "^1.2.1",
+    "ts-standard": "^12.0.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.2.4",
+    "@types/node": "^18.11.17",
+    "jest": "^29.3.1",
+    "ts-jest": "^29.0.3",
+    "ts-loader": "^9.4.2",
+    "ts-node": "^10.9.1",
+    "tslib": "^2.4.1",
+    "typescript": "^4.9.4"
+  }
+}
