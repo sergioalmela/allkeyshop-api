@@ -11,6 +11,11 @@ export interface BasicGameResponse {
   name: string
 }
 
+const noGamesFound = {
+  status: 'error',
+  message: 'No games found'
+}
+
 // Get all product IDs from a game name
 const getProductIds = async (name: string): Promise<ProductIdsResponse> => {
   // Read vaks.json file and search for the game name inside games.name
@@ -21,15 +26,16 @@ const getProductIds = async (name: string): Promise<ProductIdsResponse> => {
       // Search for the game name inside the array of games
       const filteredGames = games.filter((game) => game.name.toLowerCase().includes(name.toLowerCase()))
 
+      if (filteredGames.length === 0) {
+        return noGamesFound
+      }
+
       return {
         status: 'success',
         games: filteredGames
       }
     } else {
-      return {
-        status: 'error',
-        message: 'No games found'
-      }
+      return noGamesFound
     }
   } catch (e) {
     return {

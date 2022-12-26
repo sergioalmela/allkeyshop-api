@@ -11,6 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getProductIds = void 0;
 const fetch_1 = require("./fetch");
+const noGamesFound = {
+    status: 'error',
+    message: 'No games found'
+};
 // Get all product IDs from a game name
 const getProductIds = (name) => __awaiter(void 0, void 0, void 0, function* () {
     // Read vaks.json file and search for the game name inside games.name
@@ -19,16 +23,16 @@ const getProductIds = (name) => __awaiter(void 0, void 0, void 0, function* () {
         if (games != null) {
             // Search for the game name inside the array of games
             const filteredGames = games.filter((game) => game.name.toLowerCase().includes(name.toLowerCase()));
+            if (filteredGames.length === 0) {
+                return noGamesFound;
+            }
             return {
                 status: 'success',
                 games: filteredGames
             };
         }
         else {
-            return {
-                status: 'error',
-                message: 'No games found'
-            };
+            return noGamesFound;
         }
     }
     catch (e) {
