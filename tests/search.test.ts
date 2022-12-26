@@ -1,5 +1,6 @@
 import { getProductIds } from '../src/search'
-import {getGameData} from "../dist/gather";
+import { getGameData } from "../dist/gather"
+import { defaultOptions } from "../config/constants"
 
 const GAME_NAME = 'FIFA 22'
 const WRONG_NAME = '__________'
@@ -32,7 +33,7 @@ test('search wrong product and get empty games', async () => {
 })
 
 test('Gather data from a game', async () => {
-  const response = await getGameData(GAME_NAME)
+  const response = await getGameData(GAME_NAME, defaultOptions.currency, defaultOptions.platform, defaultOptions.shop)
 
   if (response) {
     expect(response.success).toBe(true)
@@ -44,7 +45,7 @@ test('Gather data from a game', async () => {
 })
 
 test('Gather data from a game and get empty', async () => {
-  const response = await getGameData(WRONG_NAME)
+  const response = await getGameData(WRONG_NAME, defaultOptions.currency, defaultOptions.platform, defaultOptions.shop)
 
   if (response) {
     expect(response.success).toBe(true)
