@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getGameData = void 0;
 const axios_1 = __importDefault(require("axios"));
 const search_1 = require("./search");
-const getGameData = (name) => __awaiter(void 0, void 0, void 0, function* () {
+const getGameData = (name, currency, platform, shop) => __awaiter(void 0, void 0, void 0, function* () {
     const gameList = yield (0, search_1.getProductIds)(name);
     if (gameList.games !== undefined && gameList.games.length > 0) {
         const gameId = gameList.games[0].id;

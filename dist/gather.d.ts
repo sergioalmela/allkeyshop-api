@@ -55,5 +55,5 @@ export interface ProductRes {
         [key: string]: Region;
     };
 }
-declare const getGameData: (name: string) => Promise<ProductRes | undefined>;
+declare const getGameData: (name: string, currency: any, platform: any, shop: any) => Promise<ProductRes | undefined>;
 export { getGameData };

@@ -57,12 +57,12 @@ export interface ProductRes {
   regions: { [key: string]: Region }
 }
 
-const getGameData = async (name: string): Promise<ProductRes | undefined> => {
+const getGameData = async (name: string, currency: string, platform: string, shop: string): Promise<ProductRes | undefined> => {
   const gameList = await getProductIds(name)
 
   if (gameList.games !== undefined && gameList.games.length > 0) {
     const gameId = gameList.games[0].id
-    const response = await axios.get(`https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameId}&currency=eur`)
+    const response = await axios.get(`https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameId}&currency=${currency}`)
 
     return response.data
   }

@@ -7,11 +7,11 @@ const allkeyshop_1 = require("./allkeyshop");
 }).catch((e) => {
   console.error(e)
 }) */
-/*getGameData('ark survival').then((data) => {
+/* getGameData('ark survival').then((data) => {
   console.log(data)
 }).catch((e) => {
   console.error(e)
-})*/
+}) */
 const allkeyshopService = new allkeyshop_1.AllkeyshopService({
     currency: 'eur',
     platform: 'pc',
