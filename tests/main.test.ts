@@ -23,3 +23,18 @@ test('AKS Main class has a search method that returns a promise', () => {
     expect(allkeyshopService.search('Dark Souls')).toBeInstanceOf(Promise)
 })
 
+test('AKS Main class with default initialization has a search method that returns a promise', () => {
+    const allkeyshopService = new AllkeyshopService()
+
+    expect(allkeyshopService.search('Dark Souls')).toBeInstanceOf(Promise)
+})
+
+test('AKS Main class has a search method that returns a promise that resolves to an object', async () => {
+    const allkeyshopService = new AllkeyshopService({
+        currency: defaultOptions.currency,
+        platform: defaultOptions.platform,
+        shop: defaultOptions.shop
+    })
+
+    await expect(allkeyshopService.search('Dark Souls')).resolves.toBeInstanceOf(Object)
+})
