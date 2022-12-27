@@ -31,6 +31,7 @@
   "homepage": "https://github.com/sergioalmela/allkeyshop-api",
   "dependencies": {
     "axios": "^1.2.1",
+    "fuse.js": "^6.6.2",
     "ts-standard": "^12.0.2"
   },
   "devDependencies": {

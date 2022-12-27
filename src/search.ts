@@ -1,4 +1,5 @@
 import { fetchAllGames } from './fetch'
+import { filterByName } from './filter'
 
 export interface ProductIdsResponse {
   status: string
@@ -24,7 +25,7 @@ const getProductIds = async (name: string): Promise<ProductIdsResponse> => {
 
     if (games != null) {
       // Search for the game name inside the array of games
-      const filteredGames = games.filter((game) => game.name.toLowerCase().includes(name.toLowerCase()))
+      const filteredGames = filterByName(games, name)
 
       return {
         status: 'success',

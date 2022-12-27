@@ -18,10 +18,10 @@ import { AllkeyshopService } from './allkeyshop'
 
 const allkeyshopService = new AllkeyshopService({
   currency: 'eur',
-  platform: 'pc',
+  platform: '',
   shop: 'all'
 })
 
-allkeyshopService.search('Dark Souls').then((data) => {
+allkeyshopService.search('Red Dead Redemption 2').then((data) => {
   console.log(data)
 })
