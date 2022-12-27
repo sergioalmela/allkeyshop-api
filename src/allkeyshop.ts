@@ -6,10 +6,10 @@ export class AllkeyshopService {
   private readonly platform: string
   private readonly shop: string
 
-  constructor ({ currency = defaultOptions.currency, platform = defaultOptions.platform, shop = defaultOptions.shop }) {
-    this.currency = currency
-    this.platform = platform
-    this.shop = shop
+  constructor (options?: { currency?: string, platform?: string, shop?: string }) {
+    this.currency = options?.currency ?? defaultOptions.currency
+    this.platform = options?.platform ?? defaultOptions.platform
+    this.shop = options?.shop ?? defaultOptions.shop
   }
 
   async search (name: string): Promise<ProductRes> {
