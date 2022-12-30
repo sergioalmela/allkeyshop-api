@@ -1,5 +1,5 @@
 import { getProductIds } from '../src/search'
-import { getGameData } from "../dist/gather"
+import { getGameData } from "../src/gather";
 import { defaultOptions } from "../config/constants"
 
 const GAME_NAME = 'FIFA 22'
@@ -33,7 +33,7 @@ test('search wrong product and get empty games', async () => {
 })
 
 test('Gather data from a game', async () => {
-  const response = await getGameData(GAME_NAME, defaultOptions.currency, defaultOptions.platform, defaultOptions.shop)
+  const response = await getGameData(GAME_NAME, defaultOptions.currency, defaultOptions.store)
 
   if (response) {
     expect(response.success).toBe(true)
@@ -44,8 +44,8 @@ test('Gather data from a game', async () => {
   }
 })
 
-test('Gather data from a game and get empty', async () => {
-  const response = await getGameData(WRONG_NAME, defaultOptions.currency, defaultOptions.platform, defaultOptions.shop)
+test('Gather data from a game filtering by platform', async () => {
+  const response = await getGameData(`${GAME_NAME} PS5`, defaultOptions.currency, defaultOptions.store)
 
   if (response) {
     expect(response.success).toBe(true)
@@ -53,5 +53,32 @@ test('Gather data from a game and get empty', async () => {
     expect(response.merchants).toBeDefined()
     expect(response.editions).toBeDefined()
     expect(response.regions).toBeDefined()
+    expect(response.offers[0].platform).toBe('playstation-store')
+  }
+})
+
+test('Gather data from a game filtering by store', async () => {
+  const response = await getGameData(GAME_NAME, defaultOptions.currency, 'origin')
+
+  if (response) {
+    expect(response.success).toBe(true)
+    expect(response.offers).toBeDefined()
+    expect(response.merchants).toBeDefined()
+    expect(response.editions).toBeDefined()
+    expect(response.regions).toBeDefined()
+    expect(response.offers[0].platform).toBe('origin')
+  }
+})
+
+test('Gather data from a game and get empty', async () => {
+  const response = await getGameData(WRONG_NAME, defaultOptions.currency, defaultOptions.store)
+
+  if (response) {
+    expect(response.success).toBe(true)
+    expect(response.offers).toBeDefined()
+    expect(response.merchants).toBeDefined()
+    expect(response.editions).toBeDefined()
+    expect(response.regions).toBeDefined()
+    expect(response.offers.length).toBe(0)
   }
 })

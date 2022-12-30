@@ -4,19 +4,19 @@ import { defaultOptions } from '../config/constants'
 export class AllkeyshopService {
   private readonly currency: string
   private readonly platform: string
-  private readonly shop: string
+  private readonly store: string
 
-  constructor (options?: { currency?: string, platform?: string, shop?: string }) {
+  constructor (options?: { currency?: string, platform?: string, store?: string }) {
     this.currency = options?.currency ?? defaultOptions.currency
     this.platform = options?.platform?.toLowerCase() ?? defaultOptions.platform
-    this.shop = options?.shop?.toLowerCase() ?? defaultOptions.shop
+    this.store = options?.store?.toLowerCase() ?? defaultOptions.store
   }
 
   // Search data for a game by name and return the first result (best matching)
   async search (name: string): Promise<ProductRes> {
-    name = this.platform !== '' ? `${name} ${this.platform}` : name
+    name = this.addPlatform(name)
 
-    const response = await getGameData(name, this.currency, this.platform, this.shop)
+    const response = await getGameData(name, this.currency, this.store)
 
     if (response?.success === true) {
       return response
@@ -31,4 +31,8 @@ export class AllkeyshopService {
   /* async find (name: string): Promise<ProductRes> {
     // TODO
   } */
+
+  private addPlatform (name: string): string {
+    return this.platform !== '' ? `${name} ${this.platform}` : name
+  }
 }

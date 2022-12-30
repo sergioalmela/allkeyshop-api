@@ -17,7 +17,7 @@ test('AKS Main class has a search method that returns a promise', () => {
     const allkeyshopService = new AllkeyshopService({
         currency: defaultOptions.currency,
         platform: defaultOptions.platform,
-        shop: defaultOptions.shop
+        store: defaultOptions.store
     })
 
     expect(allkeyshopService.search('Dark Souls')).toBeInstanceOf(Promise)
@@ -33,7 +33,7 @@ test('AKS Main class has a search method that returns a promise that resolves to
     const allkeyshopService = new AllkeyshopService({
         currency: defaultOptions.currency,
         platform: defaultOptions.platform,
-        shop: defaultOptions.shop
+        store: defaultOptions.store
     })
 
     await expect(allkeyshopService.search('Dark Souls')).resolves.toBeInstanceOf(Object)

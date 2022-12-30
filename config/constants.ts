@@ -1,7 +1,7 @@
 const defaultOptions = {
   currency: 'eur',
   platform: '',
-  shop: ''
+  store: ''
 }
 
 export {

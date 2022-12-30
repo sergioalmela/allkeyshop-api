@@ -4,7 +4,7 @@ import { defaultOptions } from "../config/constants"
 const GAME_NAME = 'FIFA 22'
 
 test('Gather data from a game name', async () => {
-    const response = await getGameData(GAME_NAME, defaultOptions.currency, defaultOptions.platform, defaultOptions.shop)
+    const response = await getGameData(GAME_NAME, defaultOptions.currency, defaultOptions.store)
     expect(response!.success).toBe(true)
     expect(response!.offers).toBeDefined()
     expect(response!.merchants).toBeDefined()

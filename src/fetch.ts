@@ -23,6 +23,7 @@ const fetchAllGames = async (): Promise<BasicGameResponse[] | undefined> => {
     }
   } else {
     const data = JSON.parse(fs.readFileSync(path.join(downloadDir(), 'vaks.json'), 'utf8'))
+
     return data.games
   }
 

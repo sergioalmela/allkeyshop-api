@@ -5,7 +5,8 @@ Unofficial AllKeyShop API made in typescript
 Search for games and get the cheapest price for each platform
 
 * Search any game and get all key prices, including official stores and key resellers
-* Filter by platform, or search by any platform
+* Filter by platform
+* Filter by store
 * Search by specific currency
 
 ## Technologies used
