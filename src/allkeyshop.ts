@@ -1,6 +1,6 @@
-import {getGameData, ProductRes} from './gather'
-import {defaultOptions} from '../config/constants'
-import {getProductIds, ProductIdsResponse} from "./search";
+import { getGameData, ProductRes } from './gather'
+import { defaultOptions } from '../config/constants'
+import { getProductIds, ProductIdsResponse } from './search'
 
 export class AllkeyshopService {
   private readonly currency: string
@@ -8,8 +8,9 @@ export class AllkeyshopService {
   private readonly store: string
 
   constructor (options?: { currency?: string, platform?: string, store?: string }) {
-    this.currency = options?.currency ?? defaultOptions.currency
+    this.currency = options?.currency?.toLowerCase() ?? defaultOptions.currency
     this.platform = options?.platform?.toLowerCase() ?? defaultOptions.platform
+    this.platform = this.platform === 'pc' ? '' : this.platform
     this.store = options?.store?.toLowerCase() ?? defaultOptions.store
   }
 
