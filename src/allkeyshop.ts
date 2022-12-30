@@ -1,5 +1,6 @@
-import { getGameData, ProductRes } from './gather'
-import { defaultOptions } from '../config/constants'
+import {getGameData, ProductRes} from './gather'
+import {defaultOptions} from '../config/constants'
+import {getProductIds, ProductIdsResponse} from "./search";
 
 export class AllkeyshopService {
   private readonly currency: string
@@ -28,9 +29,11 @@ export class AllkeyshopService {
   }
 
   // Return all matching results for a game name without data
-  /* async find (name: string): Promise<ProductRes> {
-    // TODO
-  } */
+  async find (name: string): Promise<ProductIdsResponse> {
+    name = this.addPlatform(name)
+
+    return await getProductIds(name)
+  }
 
   private addPlatform (name: string): string {
     return this.platform !== '' ? `${name} ${this.platform}` : name

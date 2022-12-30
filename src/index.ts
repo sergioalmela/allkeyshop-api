@@ -22,6 +22,10 @@ const allkeyshopService = new AllkeyshopService({
   store: ''
 })
 
-allkeyshopService.search('Borderlands 3').then((data) => {
+/*allkeyshopService.search('Borderlands 3').then((data) => {
   console.log(data)
+})*/
+
+allkeyshopService.find('FIFA 22').then((data) => {
+    console.log(data)
 })
