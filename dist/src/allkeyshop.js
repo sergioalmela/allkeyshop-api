@@ -15,10 +15,11 @@ const constants_1 = require("../config/constants");
 const search_1 = require("./search");
 class AllkeyshopService {
     constructor(options) {
-        var _a, _b, _c, _d, _e;
-        this.currency = (_a = options === null || options === void 0 ? void 0 : options.currency) !== null && _a !== void 0 ? _a : constants_1.defaultOptions.currency;
-        this.platform = (_c = (_b = options === null || options === void 0 ? void 0 : options.platform) === null || _b === void 0 ? void 0 : _b.toLowerCase()) !== null && _c !== void 0 ? _c : constants_1.defaultOptions.platform;
-        this.store = (_e = (_d = options === null || options === void 0 ? void 0 : options.store) === null || _d === void 0 ? void 0 : _d.toLowerCase()) !== null && _e !== void 0 ? _e : constants_1.defaultOptions.store;
+        var _a, _b, _c, _d, _e, _f;
+        this.currency = (_b = (_a = options === null || options === void 0 ? void 0 : options.currency) === null || _a === void 0 ? void 0 : _a.toLowerCase()) !== null && _b !== void 0 ? _b : constants_1.defaultOptions.currency;
+        this.platform = (_d = (_c = options === null || options === void 0 ? void 0 : options.platform) === null || _c === void 0 ? void 0 : _c.toLowerCase()) !== null && _d !== void 0 ? _d : constants_1.defaultOptions.platform;
+        this.platform = this.platform === 'pc' ? '' : this.platform;
+        this.store = (_f = (_e = options === null || options === void 0 ? void 0 : options.store) === null || _e === void 0 ? void 0 : _e.toLowerCase()) !== null && _f !== void 0 ? _f : constants_1.defaultOptions.store;
     }
     // Search data for a game by name and return the first result (best matching)
     search(name) {

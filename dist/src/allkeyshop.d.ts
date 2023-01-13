@@ -1,5 +1,5 @@
 import { ProductRes } from './gather';
-import { ProductIdsResponse } from "./search";
+import { ProductIdsResponse } from './search';
 export declare class AllkeyshopService {
     private readonly currency;
     private readonly platform;
