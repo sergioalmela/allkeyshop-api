@@ -2,7 +2,7 @@ import { getProductIds } from '../src/search'
 import { getGameData } from "../src/gather";
 import { defaultOptions } from "../config/constants"
 
-const GAME_NAME = 'FIFA 22'
+const GAME_NAME = 'FIFA 23'
 const WRONG_NAME = '__________'
 
 jest.setTimeout(20000)
