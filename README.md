@@ -26,7 +26,7 @@ const allkeyshopService = new AllkeyshopService(options)
 ```
 * Currency: Get prices in the selected currency. Default: eur
 * Platform: Get prices for the selected platform. Default: '' (PC). Possible values: 'PS5', 'Xbox One', 'Nintendo Switch' etc.
-* Store: Filter by selected store. Default: '' (any). Possible values: 'steam', 'origin', 'uplay', 'gog', 'epic' etc.
+* Store: Filter by selected store. Default: '' (any). Possible values: 'steam', 'origin', 'ea-app', 'uplay', 'gog', 'epic' etc.
 
 ### Get game keys by name
 ```typescript

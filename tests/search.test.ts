@@ -58,7 +58,7 @@ test('Gather data from a game filtering by platform', async () => {
 })
 
 test('Gather data from a game filtering by store', async () => {
-  const response = await getGameData(GAME_NAME, defaultOptions.currency, 'origin')
+  const response = await getGameData(GAME_NAME, defaultOptions.currency, 'ea-app')
 
   if (response) {
     expect(response.success).toBe(true)
@@ -66,7 +66,7 @@ test('Gather data from a game filtering by store', async () => {
     expect(response.merchants).toBeDefined()
     expect(response.editions).toBeDefined()
     expect(response.regions).toBeDefined()
-    expect(response.offers[0].platform).toBe('origin')
+    expect(response.offers[0].platform).toBe('ea-app')
   }
 })
 
