@@ -1,6 +1,6 @@
 {
   "name": "allkeyshop-api",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Unofficial Allkeyshop API",
   "main": "dist/src/allkeyshop.js",
   "types": "dist/src/allkeyshop.d.ts",
