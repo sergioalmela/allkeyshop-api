@@ -1,6 +1,6 @@
 {
   "name": "allkeyshop-api",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Unofficial Allkeyshop API",
   "main": "dist/src/allkeyshop.js",
   "types": "dist/src/allkeyshop.d.ts",
@@ -30,15 +30,15 @@
   },
   "homepage": "https://github.com/sergioalmela/allkeyshop-api",
   "dependencies": {
-    "axios": "^1.5.0",
+    "axios": "^1.5.1",
     "fuse.js": "^6.6.2"
   },
   "devDependencies": {
     "@types/jest": "^29.5.5",
-    "@types/node": "^20.6.5",
+    "@types/node": "^20.8.6",
     "jest": "^29.7.0",
     "ts-jest": "^29.1.1",
-    "ts-loader": "^9.4.4",
+    "ts-loader": "^9.5.0",
     "ts-node": "^10.9.1",
     "ts-standard": "^12.0.2",
     "typescript": "^5.2.2"
