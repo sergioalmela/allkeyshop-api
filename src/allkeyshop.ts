@@ -1,4 +1,4 @@
-import { getGameData, type ProductRes } from './gather'
+import { getGameData, type ProductSellingDetails } from './gather'
 import { defaultOptions } from '../config/constants'
 import { getProductIds, type ProductIdsResponse } from './search'
 
@@ -19,7 +19,7 @@ export class AllkeyshopService {
   }
 
   // Search data for a game by name and return the first result (best matching)
-  async search(name: string): Promise<ProductRes> {
+  async search(name: string): Promise<ProductSellingDetails> {
     name = this.appendPlatform(name)
 
     const response = await getGameData(name, this.currency, this.store)

@@ -9,6 +9,7 @@ test('Gather data from a game name', async () => {
     defaultOptions.currency,
     defaultOptions.store
   )
+
   expect(response!.success).toBe(true)
   expect(response!.offers).toBeDefined()
   expect(response!.merchants).toBeDefined()

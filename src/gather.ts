@@ -50,7 +50,7 @@ export interface Region {
   filterName: string
 }
 
-export interface ProductRes {
+export interface ProductSellingDetails {
   success: boolean
   offers: Offer[]
   merchants: Record<string, Merchant>
@@ -62,7 +62,7 @@ const getGameData = async (
   name: string,
   currency: string,
   store: string
-): Promise<ProductRes | undefined> => {
+): Promise<ProductSellingDetails | undefined> => {
   const gameList = await getProductIds(name)
 
   if (gameList.games !== undefined && gameList.games.length > 0) {

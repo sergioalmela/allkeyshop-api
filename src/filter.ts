@@ -3,10 +3,10 @@ import { type BasicGameResponse } from './search'
 import { type Offer } from './gather'
 
 const filterByName = (
-  list: BasicGameResponse[],
+  games: BasicGameResponse[],
   name: string
 ): BasicGameResponse[] => {
-  const fuse = new Fuse(list, {
+  const fuse = new Fuse(games, {
     keys: ['name'],
   })
 
@@ -15,8 +15,8 @@ const filterByName = (
   return result.map((item) => item.item)
 }
 
-const filterByStore = (list: Offer[], store: string): Offer[] => {
-  const fuse = new Fuse(list, {
+const filterByStore = (offers: Offer[], store: string): Offer[] => {
+  const fuse = new Fuse(offers, {
     keys: ['platform'],
   })
 
