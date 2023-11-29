@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import axios from 'axios'
-import { BasicGameResponse } from './search'
+import { type BasicGameResponse } from './search'
 import { downloadDir } from './file'
 
 export interface ProductListResponse {
@@ -13,16 +13,23 @@ export interface ProductListResponse {
 const fetchAllGames = async (): Promise<BasicGameResponse[] | undefined> => {
   // Check if vaks.json file is in dist folder, if not, create it
   if (!fileGamesExistsAndIsValid()) {
-    const response = await axios.get<ProductListResponse>('https://www.allkeyshop.com/api/v2/vaks.php?action=gameNames&currency=eur')
+    const response = await axios.get<ProductListResponse>(
+      'https://www.allkeyshop.com/api/v2/vaks.php?action=gameNames&currency=eur'
+    )
     const data = response.data
 
-    fs.writeFileSync(path.join(downloadDir(), 'vaks.json'), JSON.stringify(data))
+    fs.writeFileSync(
+      path.join(downloadDir(), 'vaks.json'),
+      JSON.stringify(data)
+    )
 
     if (data.status === 'success') {
       return data.games
     }
   } else {
-    const data = JSON.parse(fs.readFileSync(path.join(downloadDir(), 'vaks.json'), 'utf8'))
+    const data = JSON.parse(
+      fs.readFileSync(path.join(downloadDir(), 'vaks.json'), 'utf8')
+    )
 
     return data.games
   }
@@ -34,7 +41,6 @@ const fetchAllGames = async (): Promise<BasicGameResponse[] | undefined> => {
 const fileGamesExistsAndIsValid = (): boolean => {
   const file = path.join(downloadDir(), 'vaks.json')
 
-  // Check if file exists
   if (!fs.existsSync(file)) {
     return false
   }
@@ -47,6 +53,4 @@ const fileGamesExistsAndIsValid = (): boolean => {
   return diffDays <= 1
 }
 
-export {
-  fetchAllGames
-}
+export { fetchAllGames }

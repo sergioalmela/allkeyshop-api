@@ -14,7 +14,7 @@ export interface BasicGameResponse {
 
 const noGamesFound = {
   status: 'error',
-  message: 'No games found'
+  message: 'No games found',
 }
 
 // Get all product IDs from a game name
@@ -29,7 +29,7 @@ const getProductIds = async (name: string): Promise<ProductIdsResponse> => {
 
       return {
         status: 'success',
-        games: filteredGames
+        games: filteredGames,
       }
     } else {
       return noGamesFound
@@ -37,11 +37,9 @@ const getProductIds = async (name: string): Promise<ProductIdsResponse> => {
   } catch (e) {
     return {
       status: 'error',
-      message: e.message
+      message: e.message,
     }
   }
 }
 
-export {
-  getProductIds
-}
+export { getProductIds }

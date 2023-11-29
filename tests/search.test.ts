@@ -1,6 +1,6 @@
 import { getProductIds } from '../src/search'
-import { getGameData } from "../src/gather";
-import { defaultOptions } from "../config/constants"
+import { getGameData } from '../src/gather'
+import { defaultOptions } from '../config/constants'
 
 const GAME_NAME = 'FIFA 23'
 const WRONG_NAME = '__________'
@@ -33,7 +33,11 @@ test('search wrong product and get empty games', async () => {
 })
 
 test('Gather data from a game', async () => {
-  const response = await getGameData(GAME_NAME, defaultOptions.currency, defaultOptions.store)
+  const response = await getGameData(
+    GAME_NAME,
+    defaultOptions.currency,
+    defaultOptions.store
+  )
 
   if (response) {
     expect(response.success).toBe(true)
@@ -45,7 +49,11 @@ test('Gather data from a game', async () => {
 })
 
 test('Gather data from a game filtering by platform', async () => {
-  const response = await getGameData(`${GAME_NAME} PS5`, defaultOptions.currency, defaultOptions.store)
+  const response = await getGameData(
+    `${GAME_NAME} PS5`,
+    defaultOptions.currency,
+    defaultOptions.store
+  )
 
   if (response) {
     expect(response.success).toBe(true)
@@ -58,7 +66,11 @@ test('Gather data from a game filtering by platform', async () => {
 })
 
 test('Gather data from a game filtering by store', async () => {
-  const response = await getGameData(GAME_NAME, defaultOptions.currency, 'ea-app')
+  const response = await getGameData(
+    GAME_NAME,
+    defaultOptions.currency,
+    'ea-app'
+  )
 
   if (response) {
     expect(response.success).toBe(true)
@@ -71,7 +83,11 @@ test('Gather data from a game filtering by store', async () => {
 })
 
 test('Gather data from a game and get empty', async () => {
-  const response = await getGameData(WRONG_NAME, defaultOptions.currency, defaultOptions.store)
+  const response = await getGameData(
+    WRONG_NAME,
+    defaultOptions.currency,
+    defaultOptions.store
+  )
 
   if (response) {
     expect(response.success).toBe(true)

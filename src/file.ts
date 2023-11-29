@@ -14,7 +14,4 @@ const downloadDir = (): string => {
   return path.join(rootDir(), 'dist/public/')
 }
 
-export {
-  rootDir,
-  downloadDir
-}
+export { rootDir, downloadDir }

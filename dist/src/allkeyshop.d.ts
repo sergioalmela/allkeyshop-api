@@ -11,5 +11,5 @@ export declare class AllkeyshopService {
     });
     search(name: string): Promise<ProductRes>;
     find(name: string): Promise<ProductIdsResponse>;
-    private addPlatform;
+    private appendPlatform;
 }

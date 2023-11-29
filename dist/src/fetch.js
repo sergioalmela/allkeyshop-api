@@ -61,7 +61,6 @@ exports.fetchAllGames = fetchAllGames;
 // Check if vaks.json file has more than 1 day old, if so, fetch again
 const fileGamesExistsAndIsValid = () => {
     const file = path.join((0, file_1.downloadDir)(), 'vaks.json');
-    // Check if file exists
     if (!fs.existsSync(file)) {
         return false;
     }

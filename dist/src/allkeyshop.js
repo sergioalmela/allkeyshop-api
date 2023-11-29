@@ -24,7 +24,7 @@ class AllkeyshopService {
     // Search data for a game by name and return the first result (best matching)
     search(name) {
         return __awaiter(this, void 0, void 0, function* () {
-            name = this.addPlatform(name);
+            name = this.appendPlatform(name);
             const response = yield (0, gather_1.getGameData)(name, this.currency, this.store);
             if ((response === null || response === void 0 ? void 0 : response.success) === true) {
                 return response;
@@ -37,11 +37,11 @@ class AllkeyshopService {
     // Return all matching results for a game name without data
     find(name) {
         return __awaiter(this, void 0, void 0, function* () {
-            name = this.addPlatform(name);
+            name = this.appendPlatform(name);
             return yield (0, search_1.getProductIds)(name);
         });
     }
-    addPlatform(name) {
+    appendPlatform(name) {
         return this.platform !== '' ? `${name} ${this.platform}` : name;
     }
 }

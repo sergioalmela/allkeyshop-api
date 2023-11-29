@@ -53,17 +53,23 @@ export interface Region {
 export interface ProductRes {
   success: boolean
   offers: Offer[]
-  merchants: { [key: string]: Merchant }
-  editions: { [key: string]: Edition }
-  regions: { [key: string]: Region }
+  merchants: Record<string, Merchant>
+  editions: Record<string, Edition>
+  regions: Record<string, Region>
 }
 
-const getGameData = async (name: string, currency: string, store: string): Promise<ProductRes | undefined> => {
+const getGameData = async (
+  name: string,
+  currency: string,
+  store: string
+): Promise<ProductRes | undefined> => {
   const gameList = await getProductIds(name)
 
   if (gameList.games !== undefined && gameList.games.length > 0) {
     const gameId = gameList.games[0].id
-    const response = await axios.get(`https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameId}&currency=${currency}`)
+    const response = await axios.get(
+      `https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameId}&currency=${currency}`
+    )
 
     if (response.data.success === true && response.data.offers.length > 0) {
       if (store !== '') {
@@ -77,6 +83,4 @@ const getGameData = async (name: string, currency: string, store: string): Promi
   return undefined
 }
 
-export {
-  getGameData
-}
+export { getGameData }
