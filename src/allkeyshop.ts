@@ -22,7 +22,15 @@ export class AllkeyshopService {
   async search(name: string): Promise<ProductSellingDetails> {
     name = this.appendPlatform(name)
 
-    const response = await getGameData(name, this.currency, this.store)
+    const games = await getProductIds(name)
+
+    if (games.status === 'error') {
+      return await new Promise((resolve, reject) => {
+        reject(new Error('No games found'))
+      })
+    }
+
+    const response = await getGameData(games.games, this.currency, this.store)
 
     if (response?.success === true) {
       return response
