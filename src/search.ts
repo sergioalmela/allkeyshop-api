@@ -3,17 +3,18 @@ import { filterByName } from './filter'
 
 export interface ProductIdsResponse {
   status: string
-  games?: BasicGameResponse[]
+  games: BasicGameData[]
   message?: string
 }
 
-export interface BasicGameResponse {
+export interface BasicGameData {
   id: string
   name: string
 }
 
 const noGamesFound = {
   status: 'error',
+  games: [],
   message: 'No games found',
 }
 
@@ -37,6 +38,7 @@ const getProductIds = async (name: string): Promise<ProductIdsResponse> => {
   } catch (e) {
     return {
       status: 'error',
+      games: [],
       message: e.message,
     }
   }

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { getProductIds } from './search'
+import { type BasicGameData } from './search'
 import { filterByStore } from './filter'
 
 export interface Offer {
@@ -59,14 +59,12 @@ export interface ProductSellingDetails {
 }
 
 const getGameData = async (
-  name: string,
+  games: BasicGameData[],
   currency: string,
   store: string
 ): Promise<ProductSellingDetails | undefined> => {
-  const gameList = await getProductIds(name)
-
-  if (gameList.games !== undefined && gameList.games.length > 0) {
-    const gameId = gameList.games[0].id
+  if (games !== undefined && games.length > 0) {
+    const gameId = games[0].id
     const response = await axios.get(
       `https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameId}&currency=${currency}`
     )
