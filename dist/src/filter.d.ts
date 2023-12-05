@@ -1,5 +1,4 @@
-import { BasicGameResponse } from './search';
-import { Offer } from './gather';
-declare const filterByName: (list: BasicGameResponse[], name: string) => BasicGameResponse[];
-declare const filterByStore: (list: Offer[], store: string) => Offer[];
+import { type BasicGameData, type Offer } from './gather';
+declare const filterByName: (games: BasicGameData[], name: string) => BasicGameData[];
+declare const filterByStore: (offers: Offer[], store: string) => Offer[];
 export { filterByName, filterByStore };

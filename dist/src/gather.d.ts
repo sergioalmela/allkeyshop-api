@@ -42,18 +42,21 @@ export interface Region {
     name: string;
     filterName: string;
 }
-export interface ProductRes {
+export interface ProductSellingDetails {
     success: boolean;
     offers: Offer[];
-    merchants: {
-        [key: string]: Merchant;
-    };
-    editions: {
-        [key: string]: Edition;
-    };
-    regions: {
-        [key: string]: Region;
-    };
+    merchants: Record<string, Merchant>;
+    editions: Record<string, Edition>;
+    regions: Record<string, Region>;
 }
-declare const getGameData: (name: string, currency: string, store: string) => Promise<ProductRes | undefined>;
-export { getGameData };
+export declare const getGameData: (games: BasicGameData[], currency: string, store: string) => Promise<ProductSellingDetails | undefined>;
+export interface ProductIdsResponse {
+    status: string;
+    games: BasicGameData[];
+    message?: string;
+}
+export interface BasicGameData {
+    id: string;
+    name: string;
+}
+export declare const getProductIds: (name: string) => Promise<ProductIdsResponse>;

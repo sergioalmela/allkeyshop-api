@@ -40,7 +40,6 @@ const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const axios_1 = __importDefault(require("axios"));
 const file_1 = require("./file");
-// Fetch all games to avoid making too many requests, caching it
 const fetchAllGames = () => __awaiter(void 0, void 0, void 0, function* () {
     // Check if vaks.json file is in dist folder, if not, create it
     if (!fileGamesExistsAndIsValid()) {
