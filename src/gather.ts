@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { type BasicGameData } from './search'
-import { filterByStore } from './filter'
+import { filterByName, filterByStore } from './filter'
+import { fetchAllGames } from './fetch'
 
 export interface Offer {
   id: number
@@ -58,7 +58,7 @@ export interface ProductSellingDetails {
   regions: Record<string, Region>
 }
 
-const getGameData = async (
+export const getGameData = async (
   games: BasicGameData[],
   currency: string,
   store: string
@@ -81,4 +81,46 @@ const getGameData = async (
   return undefined
 }
 
-export { getGameData }
+export interface ProductIdsResponse {
+  status: string
+  games: BasicGameData[]
+  message?: string
+}
+
+export interface BasicGameData {
+  id: string
+  name: string
+}
+
+const noGamesFound = {
+  status: 'error',
+  games: [],
+  message: 'No games found',
+}
+
+export const getProductIds = async (
+  name: string
+): Promise<ProductIdsResponse> => {
+  // Read vaks.json file and search for the game name inside games.name
+  try {
+    const games = await fetchAllGames()
+
+    if (games != null) {
+      // Search for the game name inside the array of games
+      const filteredGames = filterByName(games, name)
+
+      return {
+        status: 'success',
+        games: filteredGames,
+      }
+    } else {
+      return noGamesFound
+    }
+  } catch (e) {
+    return {
+      status: 'error',
+      games: [],
+      message: e.message,
+    }
+  }
+}

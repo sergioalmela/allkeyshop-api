@@ -1,15 +1,14 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import axios from 'axios'
-import { type BasicGameData } from './search'
 import { downloadDir } from './file'
+import { type BasicGameData } from './gather'
 
 export interface ProductListResponse {
   status: string
   games?: BasicGameData[]
 }
 
-// Fetch all games to avoid making too many requests, caching it
 const fetchAllGames = async (): Promise<BasicGameData[] | undefined> => {
   // Check if vaks.json file is in dist folder, if not, create it
   if (!fileGamesExistsAndIsValid()) {

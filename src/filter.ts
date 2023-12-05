@@ -1,6 +1,5 @@
 import Fuse from 'fuse.js'
-import { type BasicGameData } from './search'
-import { type Offer } from './gather'
+import { type BasicGameData, type Offer } from './gather'
 
 const filterByName = (
   games: BasicGameData[],

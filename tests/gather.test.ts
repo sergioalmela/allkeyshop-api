@@ -4,8 +4,13 @@ import {
   emptyProductSellingDetailsMock,
   productSellingDetailsMock,
 } from './mock/product-selling-details.mock'
-import { getGameData } from '../src/gather'
+import { getGameData, getProductIds } from '../src/gather'
 import { gamesMock } from './mock/games.mock'
+import * as fetchModule from '../src/fetch'
+
+jest.mock('../src/fetch', () => ({
+  fetchAllGames: jest.fn(),
+}))
 
 describe('Gather', () => {
   describe('getGameData', () => {
@@ -55,6 +60,34 @@ describe('Gather', () => {
       expect(response!.merchants).toEqual({})
       expect(response!.editions).toEqual({})
       expect(response!.regions).toEqual({})
+    })
+  })
+
+  describe('getProductIds', () => {
+    beforeEach(() => {
+      jest.clearAllMocks()
+    })
+
+    it('should return a list of game Ids', async () => {
+      const expectedGames = [gamesMock[0], gamesMock[1]]
+
+      ;(fetchModule.fetchAllGames as jest.Mock).mockResolvedValue(gamesMock)
+
+      const productIds = await getProductIds('FIFA 23')
+
+      expect(productIds).not.toBeUndefined()
+      expect(productIds.games.length).toBe(2)
+      expect(productIds.games).toEqual(expectedGames)
+    })
+
+    it('should return an empty list of game Ids', async () => {
+      ;(fetchModule.fetchAllGames as jest.Mock).mockResolvedValue([])
+
+      const productIds = await getProductIds('GTA V')
+
+      expect(productIds).not.toBeUndefined()
+      expect(productIds.games.length).toBe(0)
+      expect(productIds.games).toEqual([])
     })
   })
 })

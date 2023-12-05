@@ -1,6 +1,10 @@
-import { getGameData, type ProductSellingDetails } from './gather'
+import {
+  getGameData,
+  getProductIds,
+  type ProductIdsResponse,
+  type ProductSellingDetails,
+} from './gather'
 import { defaultOptions } from '../config/constants'
-import { getProductIds, type ProductIdsResponse } from './search'
 
 export class AllkeyshopService {
   private readonly currency: string
