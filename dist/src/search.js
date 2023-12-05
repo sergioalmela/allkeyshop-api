@@ -14,7 +14,7 @@ const fetch_1 = require("./fetch");
 const filter_1 = require("./filter");
 const noGamesFound = {
     status: 'error',
-    message: 'No games found'
+    message: 'No games found',
 };
 // Get all product IDs from a game name
 const getProductIds = (name) => __awaiter(void 0, void 0, void 0, function* () {
@@ -26,7 +26,7 @@ const getProductIds = (name) => __awaiter(void 0, void 0, void 0, function* () {
             const filteredGames = (0, filter_1.filterByName)(games, name);
             return {
                 status: 'success',
-                games: filteredGames
+                games: filteredGames,
             };
         }
         else {
@@ -36,7 +36,7 @@ const getProductIds = (name) => __awaiter(void 0, void 0, void 0, function* () {
     catch (e) {
         return {
             status: 'error',
-            message: e.message
+            message: e.message,
         };
     }
 });

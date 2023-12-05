@@ -1,10 +1,12 @@
 import Fuse from 'fuse.js'
-import { BasicGameResponse } from './search'
-import { Offer } from './gather'
+import { type BasicGameData, type Offer } from './gather'
 
-const filterByName = (list: BasicGameResponse[], name: string): BasicGameResponse [] => {
-  const fuse = new Fuse(list, {
-    keys: ['name']
+const filterByName = (
+  games: BasicGameData[],
+  name: string
+): BasicGameData[] => {
+  const fuse = new Fuse(games, {
+    keys: ['name'],
   })
 
   const result = fuse.search(name)
@@ -12,9 +14,9 @@ const filterByName = (list: BasicGameResponse[], name: string): BasicGameRespons
   return result.map((item) => item.item)
 }
 
-const filterByStore = (list: Offer[], store: string): Offer [] => {
-  const fuse = new Fuse(list, {
-    keys: ['platform']
+const filterByStore = (offers: Offer[], store: string): Offer[] => {
+  const fuse = new Fuse(offers, {
+    keys: ['platform'],
   })
 
   const result = fuse.search(store)
@@ -22,7 +24,4 @@ const filterByStore = (list: Offer[], store: string): Offer [] => {
   return result.map((item) => item.item)
 }
 
-export {
-  filterByName,
-  filterByStore
-}
+export { filterByName, filterByStore }

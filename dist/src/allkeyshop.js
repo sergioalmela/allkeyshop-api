@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AllkeyshopService = void 0;
 const gather_1 = require("./gather");
 const constants_1 = require("../config/constants");
-const search_1 = require("./search");
 class AllkeyshopService {
     constructor(options) {
         var _a, _b, _c, _d, _e, _f;
@@ -24,8 +23,14 @@ class AllkeyshopService {
     // Search data for a game by name and return the first result (best matching)
     search(name) {
         return __awaiter(this, void 0, void 0, function* () {
-            name = this.addPlatform(name);
-            const response = yield (0, gather_1.getGameData)(name, this.currency, this.store);
+            name = this.appendPlatform(name);
+            const games = yield (0, gather_1.getProductIds)(name);
+            if (games.status === 'error') {
+                return yield new Promise((resolve, reject) => {
+                    reject(new Error('No games found'));
+                });
+            }
+            const response = yield (0, gather_1.getGameData)(games.games, this.currency, this.store);
             if ((response === null || response === void 0 ? void 0 : response.success) === true) {
                 return response;
             }
@@ -37,11 +42,11 @@ class AllkeyshopService {
     // Return all matching results for a game name without data
     find(name) {
         return __awaiter(this, void 0, void 0, function* () {
-            name = this.addPlatform(name);
-            return yield (0, search_1.getProductIds)(name);
+            name = this.appendPlatform(name);
+            return yield (0, gather_1.getProductIds)(name);
         });
     }
-    addPlatform(name) {
+    appendPlatform(name) {
         return this.platform !== '' ? `${name} ${this.platform}` : name;
     }
 }

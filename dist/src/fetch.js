@@ -40,7 +40,6 @@ const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const axios_1 = __importDefault(require("axios"));
 const file_1 = require("./file");
-// Fetch all games to avoid making too many requests, caching it
 const fetchAllGames = () => __awaiter(void 0, void 0, void 0, function* () {
     // Check if vaks.json file is in dist folder, if not, create it
     if (!fileGamesExistsAndIsValid()) {
@@ -61,7 +60,6 @@ exports.fetchAllGames = fetchAllGames;
 // Check if vaks.json file has more than 1 day old, if so, fetch again
 const fileGamesExistsAndIsValid = () => {
     const file = path.join((0, file_1.downloadDir)(), 'vaks.json');
-    // Check if file exists
     if (!fs.existsSync(file)) {
         return false;
     }

@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { getProductIds } from './search'
-import { filterByStore } from './filter'
+import { filterByName, filterByStore } from './filter'
+import { fetchAllGames } from './fetch'
 
 export interface Offer {
   id: number
@@ -50,20 +50,24 @@ export interface Region {
   filterName: string
 }
 
-export interface ProductRes {
+export interface ProductSellingDetails {
   success: boolean
   offers: Offer[]
-  merchants: { [key: string]: Merchant }
-  editions: { [key: string]: Edition }
-  regions: { [key: string]: Region }
+  merchants: Record<string, Merchant>
+  editions: Record<string, Edition>
+  regions: Record<string, Region>
 }
 
-const getGameData = async (name: string, currency: string, store: string): Promise<ProductRes | undefined> => {
-  const gameList = await getProductIds(name)
-
-  if (gameList.games !== undefined && gameList.games.length > 0) {
-    const gameId = gameList.games[0].id
-    const response = await axios.get(`https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameId}&currency=${currency}`)
+export const getGameData = async (
+  games: BasicGameData[],
+  currency: string,
+  store: string
+): Promise<ProductSellingDetails | undefined> => {
+  if (games !== undefined && games.length > 0) {
+    const gameId = games[0].id
+    const response = await axios.get(
+      `https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameId}&currency=${currency}`
+    )
 
     if (response.data.success === true && response.data.offers.length > 0) {
       if (store !== '') {
@@ -77,6 +81,46 @@ const getGameData = async (name: string, currency: string, store: string): Promi
   return undefined
 }
 
-export {
-  getGameData
+export interface ProductIdsResponse {
+  status: string
+  games: BasicGameData[]
+  message?: string
+}
+
+export interface BasicGameData {
+  id: string
+  name: string
+}
+
+const noGamesFound = {
+  status: 'error',
+  games: [],
+  message: 'No games found',
+}
+
+export const getProductIds = async (
+  name: string
+): Promise<ProductIdsResponse> => {
+  // Read vaks.json file and search for the game name inside games.name
+  try {
+    const games = await fetchAllGames()
+
+    if (games != null) {
+      // Search for the game name inside the array of games
+      const filteredGames = filterByName(games, name)
+
+      return {
+        status: 'success',
+        games: filteredGames,
+      }
+    } else {
+      return noGamesFound
+    }
+  } catch (e) {
+    return {
+      status: 'error',
+      games: [],
+      message: e.message,
+    }
+  }
 }
