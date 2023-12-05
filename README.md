@@ -9,7 +9,7 @@ npm install allkeyshop-api
 ## Usage
 ### Import and initialize
 ```typescript
-import { AllkeyshopService } from "allkeyshop-api"
+import { AllkeyshopService } from 'allkeyshop-api'
 
 const allkeyshopService = new AllkeyshopService()
 ```
@@ -107,6 +107,11 @@ Search for games and get the cheapest price for each platform
 ## Issues
 
 Feel free to submit issues and enhancement requests here: [Report Issue](https://github.com/sergioalmela/allkeyshop-api/issues)
+
+## Donate
+If you want to support the project, you can buy me a coffee. Thanks!
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/sergioalmela)
 
 ## Contributing
 
