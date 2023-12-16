@@ -10,6 +10,8 @@
   "scripts": {
     "prepare": "npm run build",
     "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
     "lint": "eslint --ext .ts src/ tests/",
     "lint:fix": "npm run lint -- --fix",
     "test": "npm run build && jest --verbose"
