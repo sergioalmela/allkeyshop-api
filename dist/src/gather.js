@@ -20,7 +20,7 @@ const getGameData = (games, currency, store) => __awaiter(void 0, void 0, void 0
     if (games !== undefined && games.length > 0) {
         const gameId = games[0].id;
         const response = yield axios_1.default.get(`https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameId}&currency=${currency}`);
-        if (response.data.success === true && response.data.offers.length > 0) {
+        if (response.data.success && response.data.offers.length > 0) {
             if (store !== '') {
                 response.data.offers = (0, filter_1.filterByStore)(response.data.offers, store);
             }

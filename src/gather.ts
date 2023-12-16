@@ -65,11 +65,11 @@ export const getGameData = async (
 ): Promise<ProductSellingDetails | undefined> => {
   if (games !== undefined && games.length > 0) {
     const gameId = games[0].id
-    const response = await axios.get(
+    const response = await axios.get<ProductSellingDetails>(
       `https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameId}&currency=${currency}`
     )
 
-    if (response.data.success === true && response.data.offers.length > 0) {
+    if (response.data.success && response.data.offers.length > 0) {
       if (store !== '') {
         response.data.offers = filterByStore(response.data.offers, store)
       }
