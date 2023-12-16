@@ -22,6 +22,9 @@ jobs:
       - name: npm install
         run: npm install
 
+      - name: Run Lint Check
+        run: npm run lint
+
       - name: Run Prettier
         run: npm run format:check
 
