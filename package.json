@@ -1,6 +1,6 @@
 {
   "name": "allkeyshop-api",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "Unofficial Allkeyshop API",
   "main": "dist/src/allkeyshop.js",
   "types": "dist/src/allkeyshop.d.ts",
@@ -32,18 +32,18 @@
   },
   "homepage": "https://github.com/sergioalmela/allkeyshop-api",
   "dependencies": {
-    "axios": "^1.6.2",
+    "axios": "^1.6.3",
     "fuse.js": "^7.0.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.11",
-    "@types/node": "^20.10.4",
-    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@types/node": "^20.10.6",
+    "@typescript-eslint/eslint-plugin": "^6.16.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-standard-with-typescript": "^43.0.0",
     "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-n": "^16.4.0",
+    "eslint-plugin-n": "^16.6.0",
     "eslint-plugin-promise": "^6.1.1",
     "jest": "^29.7.0",
     "prettier": "3.1.1",
