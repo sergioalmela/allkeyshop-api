@@ -11,4 +11,5 @@ export declare class AllkeyshopService {
     search(name: string): Promise<ProductSellingDetails>;
     find(name: string): Promise<ProductIdsResponse>;
     private appendPlatform;
+    private emptyData;
 }

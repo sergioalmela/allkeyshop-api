@@ -29,9 +29,7 @@ export class AllkeyshopService {
     const games = await getProductIds(name)
 
     if (games.status === 'error') {
-      return await new Promise((resolve, reject) => {
-        reject(new Error('No games found'))
-      })
+      return this.emptyData()
     }
 
     const response = await getGameData(games.games, this.currency, this.store)
@@ -40,9 +38,7 @@ export class AllkeyshopService {
       return response
     }
 
-    return await new Promise((resolve, reject) => {
-      reject(new Error('No games found'))
-    })
+    return this.emptyData()
   }
 
   // Return all matching results for a game name without data
@@ -54,5 +50,15 @@ export class AllkeyshopService {
 
   private appendPlatform(name: string): string {
     return this.platform !== '' ? `${name} ${this.platform}` : name
+  }
+
+  private emptyData(): ProductSellingDetails {
+    return {
+      success: false,
+      offers: [],
+      merchants: {},
+      editions: {},
+      regions: {},
+    }
   }
 }

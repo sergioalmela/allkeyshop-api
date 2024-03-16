@@ -26,17 +26,13 @@ class AllkeyshopService {
             name = this.appendPlatform(name);
             const games = yield (0, gather_1.getProductIds)(name);
             if (games.status === 'error') {
-                return yield new Promise((resolve, reject) => {
-                    reject(new Error('No games found'));
-                });
+                return this.emptyData();
             }
             const response = yield (0, gather_1.getGameData)(games.games, this.currency, this.store);
             if ((response === null || response === void 0 ? void 0 : response.success) === true) {
                 return response;
             }
-            return yield new Promise((resolve, reject) => {
-                reject(new Error('No games found'));
-            });
+            return this.emptyData();
         });
     }
     // Return all matching results for a game name without data
@@ -48,6 +44,15 @@ class AllkeyshopService {
     }
     appendPlatform(name) {
         return this.platform !== '' ? `${name} ${this.platform}` : name;
+    }
+    emptyData() {
+        return {
+            success: false,
+            offers: [],
+            merchants: {},
+            editions: {},
+            regions: {},
+        };
     }
 }
 exports.AllkeyshopService = AllkeyshopService;
