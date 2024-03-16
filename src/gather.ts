@@ -106,7 +106,6 @@ export const getProductIds = async (
     const games = await fetchAllGames()
 
     if (games != null) {
-      // Search for the game name inside the array of games
       const filteredGames = filterByName(games, name)
 
       return {
