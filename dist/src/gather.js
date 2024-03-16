@@ -40,11 +40,7 @@ const getProductIds = (name) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const games = yield (0, fetch_1.fetchAllGames)();
         if (games != null) {
-            // Search for the game name inside the array of games
-            const start = new Date().getTime();
             const filteredGames = (0, filter_1.filterByName)(games, name);
-            const end = new Date().getTime();
-            console.log(`Filtered games in ${end - start}ms`);
             return {
                 status: 'success',
                 games: filteredGames,

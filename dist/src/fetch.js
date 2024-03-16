@@ -50,14 +50,12 @@ const fetchAllGames = () => __awaiter(void 0, void 0, void 0, function* () {
         const response = yield axios_1.default.get('https://www.allkeyshop.com/api/v2/vaks.php?action=gameNames&currency=eur');
         const data = response.data;
         fs.writeFileSync(path.join((0, file_1.downloadDir)(), 'vaks.json'), JSON.stringify(data));
-        console.log('Fetching games');
         if (data.status === 'success') {
             cachedGames = data.games;
             return data.games;
         }
     }
     else {
-        console.log('Using cached games');
         const data = JSON.parse(fs.readFileSync(path.join((0, file_1.downloadDir)(), 'vaks.json'), 'utf8'));
         cachedGames = data.games;
         return data.games;
