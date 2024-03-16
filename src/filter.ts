@@ -1,27 +1,25 @@
-import Fuse from 'fuse.js'
 import { type BasicGameData, type Offer } from './gather'
+import FuzzySearch from 'fuzzy-search'
 
 const filterByName = (
   games: BasicGameData[],
   name: string
 ): BasicGameData[] => {
-  const fuse = new Fuse(games, {
-    keys: ['name'],
+  const searcher = new FuzzySearch(games, ['name'], {
+    caseSensitive: false,
+    sort: true,
   })
 
-  const result = fuse.search(name)
-
-  return result.map((item) => item.item)
+  return searcher.search(name)
 }
 
 const filterByStore = (offers: Offer[], store: string): Offer[] => {
-  const fuse = new Fuse(offers, {
-    keys: ['platform'],
+  const searcher = new FuzzySearch(offers, ['platform'], {
+    caseSensitive: false,
+    sort: true,
   })
 
-  const result = fuse.search(store)
-
-  return result.map((item) => item.item)
+  return searcher.search(store)
 }
 
 export { filterByName, filterByStore }
