@@ -9,7 +9,13 @@ export interface ProductListResponse {
   games?: BasicGameData[]
 }
 
+let cachedGames: BasicGameData[] | undefined
+
 const fetchAllGames = async (): Promise<BasicGameData[] | undefined> => {
+  if (cachedGames !== undefined) {
+    return cachedGames
+  }
+
   // Check if vaks.json file is in dist folder, if not, create it
   if (!fileGamesExistsAndIsValid()) {
     const response = await axios.get<ProductListResponse>(
@@ -23,6 +29,7 @@ const fetchAllGames = async (): Promise<BasicGameData[] | undefined> => {
     )
 
     if (data.status === 'success') {
+      cachedGames = data.games
       return data.games
     }
   } else {
@@ -30,6 +37,7 @@ const fetchAllGames = async (): Promise<BasicGameData[] | undefined> => {
       fs.readFileSync(path.join(downloadDir(), 'vaks.json'), 'utf8')
     )
 
+    cachedGames = data.games
     return data.games
   }
 
