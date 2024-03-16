@@ -1,6 +1,6 @@
 {
   "name": "allkeyshop-api",
-  "version": "1.1.7",
+  "version": "1.2.0",
   "description": "Unofficial Allkeyshop API",
   "main": "dist/src/allkeyshop.js",
   "types": "dist/src/allkeyshop.d.ts",
@@ -33,9 +33,10 @@
   "homepage": "https://github.com/sergioalmela/allkeyshop-api",
   "dependencies": {
     "axios": "^1.6.8",
-    "fuse.js": "^7.0.0"
+    "fuzzy-search": "^3.2.1"
   },
   "devDependencies": {
+    "@types/fuzzy-search": "^2.1.5",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.28",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
