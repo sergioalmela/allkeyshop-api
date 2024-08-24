@@ -12,7 +12,7 @@
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
-    "lint": "eslint --ext .ts src/ tests/",
+    "lint": "eslint */*.ts",
     "lint:fix": "npm run lint -- --fix",
     "test": "npm run build && jest --verbose"
   },
@@ -32,25 +32,23 @@
   },
   "homepage": "https://github.com/sergioalmela/allkeyshop-api",
   "dependencies": {
-    "axios": "^1.6.8",
+    "axios": "^1.7.5",
     "fuzzy-search": "^3.2.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.9.1",
     "@types/fuzzy-search": "^2.1.5",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.11.28",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "eslint": "^8.57.0",
+    "@types/node": "^22.5.0",
+    "eslint": "^9.9.1",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-config-standard-with-typescript": "^43.0.1",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-n": "^16.6.2",
-    "eslint-plugin-promise": "^6.1.1",
+    "globals": "^15.9.0",
     "jest": "^29.7.0",
-    "prettier": "3.2.5",
-    "ts-jest": "^29.1.2",
+    "prettier": "3.3.3",
+    "ts-jest": "^29.2.5",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.2"
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.2.0"
   }
 }
