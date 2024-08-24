@@ -73,7 +73,7 @@ describe('Gather', () => {
 
       ;(fetchModule.fetchAllGames as jest.Mock).mockResolvedValue(gamesMock)
 
-      const productIds = await getProductIds('FIFA 23')
+      const productIds = await getProductIds('FIFA 2')
 
       expect(productIds).not.toBeUndefined()
       expect(productIds.games.length).toBe(2)

@@ -5,7 +5,7 @@ import { offersMock } from './mock/offers.mock'
 describe('Filter', () => {
   describe('filterByName', () => {
     it('should filter by name and return the filtered data', () => {
-      const games = filterByName(gamesMock, 'FIFA 23')
+      const games = filterByName(gamesMock, 'FIFA 2')
 
       expect(games.length).toBe(2)
     })
