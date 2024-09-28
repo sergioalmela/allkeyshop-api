@@ -31,14 +31,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.fetchAllGames = void 0;
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
-const axios_1 = __importDefault(require("axios"));
 const file_1 = require("./file");
 let cachedGames;
 const fetchAllGames = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -47,8 +43,8 @@ const fetchAllGames = () => __awaiter(void 0, void 0, void 0, function* () {
     }
     // Check if vaks.json file is in dist folder, if not, create it
     if (!fileGamesExistsAndIsValid()) {
-        const response = yield axios_1.default.get('https://www.allkeyshop.com/api/v2/vaks.php?action=gameNames&currency=eur');
-        const data = response.data;
+        const response = yield fetch('https://www.allkeyshop.com/api/v2/vaks.php?action=gameNames&currency=eur');
+        const data = yield response.json();
         fs.writeFileSync(path.join((0, file_1.downloadDir)(), 'vaks.json'), JSON.stringify(data));
         if (data.status === 'success') {
             cachedGames = data.games;

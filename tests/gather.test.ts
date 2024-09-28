@@ -1,5 +1,3 @@
-import axios from 'axios'
-
 import {
   emptyProductSellingDetailsMock,
   productSellingDetailsMock,
@@ -15,9 +13,9 @@ jest.mock('../src/fetch', () => ({
 describe('Gather', () => {
   describe('getGameData', () => {
     it('should gather data from a game name', async () => {
-      jest.spyOn(axios, 'get').mockImplementation(async () => {
-        return { data: productSellingDetailsMock }
-      })
+      global.fetch = jest.fn().mockImplementation(async () => ({
+        json: async () => productSellingDetailsMock,
+      }))
 
       const response = await getGameData(gamesMock, 'EUR', '')
 
@@ -33,9 +31,9 @@ describe('Gather', () => {
     it('should gather data from a game name and filter by store', async () => {
       const expectedGame = productSellingDetailsMock.offers[2]
 
-      jest.spyOn(axios, 'get').mockImplementation(async () => {
-        return { data: productSellingDetailsMock }
-      })
+      global.fetch = jest.fn().mockImplementation(async () => ({
+        json: async () => productSellingDetailsMock,
+      }))
 
       const response = await getGameData(gamesMock, 'EUR', 'PS5')
 
@@ -47,9 +45,9 @@ describe('Gather', () => {
     })
 
     it('should return undefined when no data is found', async () => {
-      jest.spyOn(axios, 'get').mockImplementation(async () => {
-        return { data: emptyProductSellingDetailsMock }
-      })
+      global.fetch = jest.fn().mockImplementation(async () => ({
+        json: async () => emptyProductSellingDetailsMock,
+      }))
 
       const response = await getGameData(gamesMock, 'EUR', '')
 

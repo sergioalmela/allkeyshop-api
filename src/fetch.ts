@@ -1,6 +1,5 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import axios from 'axios'
 import { downloadDir } from './file'
 import { type BasicGameData } from './gather'
 
@@ -18,10 +17,10 @@ const fetchAllGames = async (): Promise<BasicGameData[] | undefined> => {
 
   // Check if vaks.json file is in dist folder, if not, create it
   if (!fileGamesExistsAndIsValid()) {
-    const response = await axios.get<ProductListResponse>(
+    const response = await fetch(
       'https://www.allkeyshop.com/api/v2/vaks.php?action=gameNames&currency=eur'
     )
-    const data = response.data
+    const data: ProductListResponse = await response.json()
 
     fs.writeFileSync(
       path.join(downloadDir(), 'vaks.json'),

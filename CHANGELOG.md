@@ -1,3 +1,7 @@
+# 1.3.0
+- Remove axios dependency and use fetch instead.
+- Upgrade dev dependencies.
+
 # 1.2.0
 - Improve performance and reduce memory usage when searching multiple games at once.
 - Dramatic improvement in the search method. From 8 seconds to 0.2

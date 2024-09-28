@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { filterByName, filterByStore } from './filter'
 import { fetchAllGames } from './fetch'
 
@@ -65,17 +64,18 @@ export const getGameData = async (
 ): Promise<ProductSellingDetails | undefined> => {
   if (games !== undefined && games.length > 0) {
     const gameId = games[0].id
-    const response = await axios.get<ProductSellingDetails>(
+    const response = await fetch(
       `https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameId}&currency=${currency}`
     )
+    const data: ProductSellingDetails = await response.json()
 
-    if (response.data.success && response.data.offers.length > 0) {
+    if (data.success && data.offers.length > 0) {
       if (store !== '') {
-        response.data.offers = filterByStore(response.data.offers, store)
+        data.offers = filterByStore(data.offers, store)
       }
     }
 
-    return response.data
+    return data
   }
 
   return undefined

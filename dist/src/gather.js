@@ -8,24 +8,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getProductIds = exports.getGameData = void 0;
-const axios_1 = __importDefault(require("axios"));
 const filter_1 = require("./filter");
 const fetch_1 = require("./fetch");
 const getGameData = (games, currency, store) => __awaiter(void 0, void 0, void 0, function* () {
     if (games !== undefined && games.length > 0) {
         const gameId = games[0].id;
-        const response = yield axios_1.default.get(`https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameId}&currency=${currency}`);
-        if (response.data.success && response.data.offers.length > 0) {
+        const response = yield fetch(`https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameId}&currency=${currency}`);
+        const data = yield response.json();
+        if (data.success && data.offers.length > 0) {
             if (store !== '') {
-                response.data.offers = (0, filter_1.filterByStore)(response.data.offers, store);
+                data.offers = (0, filter_1.filterByStore)(data.offers, store);
             }
         }
-        return response.data;
+        return data;
     }
     return undefined;
 });
