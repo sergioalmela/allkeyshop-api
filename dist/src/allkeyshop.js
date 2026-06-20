@@ -20,7 +20,6 @@ class AllkeyshopService {
         this.platform = this.platform === 'pc' ? '' : this.platform;
         this.store = (_f = (_e = options === null || options === void 0 ? void 0 : options.store) === null || _e === void 0 ? void 0 : _e.toLowerCase()) !== null && _f !== void 0 ? _f : constants_1.defaultOptions.store;
     }
-    // Search data for a game by name and return the first result (best matching)
     search(name) {
         return __awaiter(this, void 0, void 0, function* () {
             name = this.appendPlatform(name);
@@ -29,13 +28,12 @@ class AllkeyshopService {
                 return this.emptyData();
             }
             const response = yield (0, gather_1.getGameData)(games.games, this.currency, this.store);
-            if ((response === null || response === void 0 ? void 0 : response.success) === true) {
+            if (response && response.history) {
                 return response;
             }
             return this.emptyData();
         });
     }
-    // Return all matching results for a game name without data
     find(name) {
         return __awaiter(this, void 0, void 0, function* () {
             name = this.appendPlatform(name);
@@ -47,11 +45,13 @@ class AllkeyshopService {
     }
     emptyData() {
         return {
-            success: false,
-            offers: [],
+            officialMerchants: '',
+            history: [],
             merchants: {},
             editions: {},
             regions: {},
+            lower_official_price: { merchant_id: 0, price: '0', last_update: '' },
+            lower_keyshops_price: { merchant_id: 0, price: '0', last_update: '' },
         };
     }
 }

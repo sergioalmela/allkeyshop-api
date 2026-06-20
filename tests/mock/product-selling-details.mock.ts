@@ -1,173 +1,57 @@
 export const productSellingDetailsMock = {
-  editions: {
-    '1': {
-      id: '1',
-      name: 'Standard',
-    },
-    '7': {
-      id: '7',
-      name: 'Deluxe',
-    },
-  },
-  merchants: {
-    '1': {
-      aggregateRating: {
-        count: 46,
-        value: 4.8,
-      },
-      giftCardReminder: {
-        discountAmount: 5,
-        url: 'https://www.allkeyshop.com/blog/buy-steam-gift-card-cd-key-compare-prices/',
-      },
-      id: '1',
-      logoSlug: 'steam',
-      name: 'Steam',
-      paymentMethods: ['card', 'paypal'],
-      reviewUrl: 'https://www.allkeyshop.com/blog/review/steam/',
-      searchable: 1,
-      types: 'Official Store',
-    },
-    '2': {
-      aggregateRating: {
-        count: 10,
-        value: 4.9,
-      },
-      giftCardReminder: null,
-      id: '2',
-      logoSlug: 'dlgamer',
-      name: 'Dlgamer EU',
-      paymentMethods: ['card', 'paypal'],
-      reviewUrl:
-        'https://www.allkeyshop.com/blog/review/dlgamer-eu-review-coupon-facebook-for-steam-download/',
-      searchable: 1,
-      types: 'Official Store',
-    },
-    '700': {
-      aggregateRating: {
-        count: 61,
-        value: 4.84,
-      },
-      giftCardReminder: null,
-      id: '700',
-      logoSlug: 'gamesplanet',
-      name: 'Gamesplanet DE',
-      paymentMethods: ['card', 'paypal', 'crypto'],
-      reviewUrl:
-        'https://www.allkeyshop.com/blog/review/gamesplanet-de-coupon-facebook-for-steam-download/',
-      searchable: 1,
-      types: 'Official Store',
-    },
-  },
-  offers: [
+  officialMerchants: '47,61',
+  history: [
     {
-      affiliateUrl: 'https://www.testurl.com',
+      product_id: 134968119,
+      merchant_id: 47,
       edition: '1',
-      id: 134977773,
-      isActive: true,
-      merchant: '557',
-      platform: 'steam',
-      price: {
-        eur: {
-          bestCoupon: {
-            code: 'AKS10',
-            discountStrategy: '%',
-            discountValue: '10.00',
-            isCashback: false,
-          },
-          currency: 'eur',
-          price: 24.74,
-          priceWithoutCoupon: 27.49,
-        },
-      },
-      region: '9',
-      stock: 'InStock',
+      region: '2',
+      last_price: 38.66,
+      min_discount_price: 37.37,
+      best_discount_code: 'AKSGAME',
+      start: '2026-06-19 18:28:55',
+      end: '2026-06-19 18:28:55',
     },
     {
-      affiliateUrl: 'https://www.testurl.com',
+      product_id: 132568969,
+      merchant_id: 61,
       edition: '1',
-      id: 135023156,
-      isActive: true,
-      merchant: '408',
-      platform: 'steam',
-      price: {
-        eur: {
-          bestCoupon: {
-            code: '14%: AKS14',
-            discountStrategy: '%',
-            discountValue: '14.00',
-            isCashback: false,
-          },
-          currency: 'eur',
-          price: 25.09,
-          priceWithoutCoupon: 29.17,
-        },
-      },
-      region: '9',
-      stock: 'InStock',
-    },
-    {
-      affiliateUrl: 'https://www.testurl.com',
-      edition: '1',
-      id: 134470740,
-      isActive: true,
-      merchant: '47',
-      platform: 'PS5',
-      price: {
-        eur: {
-          bestCoupon: {
-            code: '12%: AKS12',
-            discountStrategy: '%',
-            discountValue: '12.00',
-            isCashback: false,
-          },
-          currency: 'eur',
-          price: 25.71,
-          priceWithoutCoupon: 29.22,
-        },
-      },
-      region: '9',
-      stock: 'InStock',
+      region: '2',
+      last_price: 41.19,
+      min_discount_price: 38.52,
+      best_discount_code: 'AKSHERO',
+      start: '2026-06-19 03:02:53',
+      end: '2026-06-19 03:02:53',
     },
   ],
-  regions: {
-    '2': {
-      filterName: 'STEAM GLOBAL',
-      id: '2',
-      name: 'GLOBAL',
-    },
-    '9': {
-      filterName: 'STEAM EU',
-      id: '9',
-      name: 'EUROPE',
-    },
-    '25': {
-      filterName: 'STEAM GIFT GLOBAL',
-      id: '25',
-      name: 'GIFT',
-    },
-    '259': {
-      filterName: 'STEAM GIFT EU',
-      id: '259',
-      name: 'GIFT EU',
-    },
-    steamemea: {
-      filterName: 'STEAM EMEA',
-      id: 'steamemea',
-      name: 'EMEA',
-    },
-    steamrow: {
-      filterName: 'STEAM ROW',
-      id: 'steamrow',
-      name: 'ROW',
-    },
+  editions: {
+    '1': { id: '1', name: 'Standard Edition' },
   },
-  success: true,
+  regions: {
+    '2': { id: '2', name: 'Steam' },
+  },
+  merchants: {
+    '47': { id: '47', name: 'Kinguin' },
+    '61': { id: '61', name: 'G2A' },
+  },
+  lower_official_price: {
+    merchant_id: 47,
+    price: '38.66',
+    last_update: '2026-06-19 18:28:55',
+  },
+  lower_keyshops_price: {
+    merchant_id: 61,
+    price: '41.19',
+    last_update: '2026-06-19 03:02:53',
+  },
 }
 
 export const emptyProductSellingDetailsMock = {
+  officialMerchants: '',
+  history: [],
   editions: {},
-  merchants: {},
-  offers: [],
   regions: {},
-  success: true,
+  merchants: {},
+  lower_official_price: { merchant_id: 0, price: '0', last_update: '' },
+  lower_keyshops_price: { merchant_id: 0, price: '0', last_update: '' },
 }

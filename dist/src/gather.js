@@ -15,11 +15,11 @@ const fetch_1 = require("./fetch");
 const getGameData = (games, currency, store) => __awaiter(void 0, void 0, void 0, function* () {
     if (games !== undefined && games.length > 0) {
         const gameId = games[0].id;
-        const response = yield fetch(`https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameId}&currency=${currency}`);
+        const response = yield fetch(`https://www.allkeyshop.com/api/price_history_api.php?normalised_name=${gameId}&currency=${currency.toUpperCase()}&database=allkeyshop.com&v2=1`);
         const data = yield response.json();
-        if (data.success && data.offers.length > 0) {
+        if (data.history && data.history.length > 0) {
             if (store !== '') {
-                data.offers = (0, filter_1.filterByStore)(data.offers, store);
+                data.history = (0, filter_1.filterByStore)(data.history, data.merchants, store);
             }
         }
         return data;

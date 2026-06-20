@@ -77,7 +77,7 @@ allkeyshopService.search('Borderlands 3').then((data) => {
 
 ### Get game names without data
 ```typescript
-allkeyshopService.find('FIFA 22').then((data) => {
+allkeyshopService.find('DARK SOULS III').then((data) => {
     console.log(data)
 })
 
@@ -85,8 +85,8 @@ allkeyshopService.find('FIFA 22').then((data) => {
 // {
 //     status: 'success', 
 //     games: [
-//          { id: '83060', name: 'FIFA 22' },
-//          { id: '83063', name: 'FIFA 22 PS4' },
+//          { id: '83060', name: 'DARK SOULS' },
+//          { id: '83063', name: 'DARK SOULS REMASTERED' },
 //          ...
 //     ]
 // }

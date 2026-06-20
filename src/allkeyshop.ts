@@ -22,7 +22,6 @@ export class AllkeyshopService {
     this.store = options?.store?.toLowerCase() ?? defaultOptions.store
   }
 
-  // Search data for a game by name and return the first result (best matching)
   async search(name: string): Promise<ProductSellingDetails> {
     name = this.appendPlatform(name)
 
@@ -34,17 +33,15 @@ export class AllkeyshopService {
 
     const response = await getGameData(games.games, this.currency, this.store)
 
-    if (response?.success === true) {
+    if (response && response.history) {
       return response
     }
 
     return this.emptyData()
   }
 
-  // Return all matching results for a game name without data
   async find(name: string): Promise<ProductIdsResponse> {
     name = this.appendPlatform(name)
-
     return await getProductIds(name)
   }
 
@@ -54,11 +51,13 @@ export class AllkeyshopService {
 
   private emptyData(): ProductSellingDetails {
     return {
-      success: false,
-      offers: [],
+      officialMerchants: '',
+      history: [],
       merchants: {},
       editions: {},
       regions: {},
+      lower_official_price: { merchant_id: 0, price: '0', last_update: '' },
+      lower_keyshops_price: { merchant_id: 0, price: '0', last_update: '' },
     }
   }
 }
