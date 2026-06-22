@@ -1,10 +1,10 @@
+import { defaultOptions } from '../config/constants'
 import {
+  type GameOffers,
   getGameData,
   getProductIds,
   type ProductIdsResponse,
-  type ProductSellingDetails,
 } from './gather'
-import { defaultOptions } from '../config/constants'
 
 export class AllkeyshopService {
   private readonly currency: string
@@ -22,7 +22,7 @@ export class AllkeyshopService {
     this.store = options?.store?.toLowerCase() ?? defaultOptions.store
   }
 
-  async search(name: string): Promise<ProductSellingDetails> {
+  async search(name: string): Promise<GameOffers> {
     name = this.appendPlatform(name)
 
     const games = await getProductIds(name)
@@ -33,11 +33,7 @@ export class AllkeyshopService {
 
     const response = await getGameData(games.games, this.currency, this.store)
 
-    if (response && response.history) {
-      return response
-    }
-
-    return this.emptyData()
+    return response ?? this.emptyData()
   }
 
   async find(name: string): Promise<ProductIdsResponse> {
@@ -49,15 +45,13 @@ export class AllkeyshopService {
     return this.platform !== '' ? `${name} ${this.platform}` : name
   }
 
-  private emptyData(): ProductSellingDetails {
+  private emptyData(): GameOffers {
     return {
-      officialMerchants: '',
-      history: [],
-      merchants: {},
-      editions: {},
-      regions: {},
-      lower_official_price: { merchant_id: 0, price: '0', last_update: '' },
-      lower_keyshops_price: { merchant_id: 0, price: '0', last_update: '' },
+      offers: [],
+      lowestPrices: {
+        official: null,
+        keyshops: null,
+      },
     }
   }
 }

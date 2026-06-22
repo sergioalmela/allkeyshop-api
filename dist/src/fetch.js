@@ -32,53 +32,58 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.fetchAllGames = void 0;
-const fs = __importStar(require("fs"));
-const path = __importStar(require("path"));
+const fs = __importStar(require("node:fs"));
+const path = __importStar(require("node:path"));
 const file_1 = require("./file");
+const CATALOG_FILE = 'vaks.json';
+const CATALOG_URL = 'https://www.allkeyshop.com/api/v2/vaks.php?action=gameNames&currency=eur';
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 let cachedGames;
-const fetchAllGames = () => __awaiter(void 0, void 0, void 0, function* () {
-    if (cachedGames !== undefined) {
-        return cachedGames;
-    }
-    // Check if vaks.json file is in dist folder, if not, create it
-    if (!fileGamesExistsAndIsValid()) {
-        const response = yield fetch('https://www.allkeyshop.com/api/v2/vaks.php?action=gameNames&currency=eur');
-        const data = yield response.json();
-        fs.writeFileSync(path.join((0, file_1.downloadDir)(), 'vaks.json'), JSON.stringify(data));
-        if (data.status === 'success') {
-            cachedGames = data.games;
-            return data.games;
-        }
-    }
-    else {
-        const data = JSON.parse(fs.readFileSync(path.join((0, file_1.downloadDir)(), 'vaks.json'), 'utf8'));
-        cachedGames = data.games;
-        return data.games;
-    }
-    return undefined;
-});
-exports.fetchAllGames = fetchAllGames;
-// Check if vaks.json file has more than 1 day old, if so, fetch again
-const fileGamesExistsAndIsValid = () => {
-    const file = path.join((0, file_1.downloadDir)(), 'vaks.json');
+let pendingLoad;
+const catalogPath = () => path.join((0, file_1.cacheDir)(), CATALOG_FILE);
+// The on-disk catalog is considered fresh for one day.
+const isCacheFresh = () => {
+    const file = catalogPath();
     if (!fs.existsSync(file)) {
         return false;
     }
-    const stats = fs.statSync(file);
-    const now = new Date();
-    const diff = Math.abs(now.getTime() - stats.mtime.getTime());
-    const diffDays = Math.ceil(diff / (1000 * 3600 * 24));
-    return diffDays <= 1;
+    const ageMs = Date.now() - fs.statSync(file).mtime.getTime();
+    return ageMs < ONE_DAY_MS;
 };
+const readCachedCatalog = () => {
+    const data = JSON.parse(fs.readFileSync(catalogPath(), 'utf8'));
+    return data.games;
+};
+const downloadCatalog = async () => {
+    const response = await fetch(CATALOG_URL);
+    const data = await response.json();
+    // Only persist a successful response so we never cache an error payload.
+    if (data.status !== 'success' || data.games === undefined) {
+        return undefined;
+    }
+    fs.mkdirSync((0, file_1.cacheDir)(), { recursive: true });
+    fs.writeFileSync(catalogPath(), JSON.stringify(data));
+    return data.games;
+};
+const loadGames = async () => isCacheFresh() ? readCachedCatalog() : downloadCatalog();
+const fetchAllGames = async () => {
+    if (cachedGames !== undefined) {
+        return cachedGames;
+    }
+    // Share a single in-flight load between concurrent callers so the catalog
+    // is never downloaded more than once.
+    if (pendingLoad === undefined) {
+        pendingLoad = loadGames();
+    }
+    try {
+        cachedGames = await pendingLoad;
+        return cachedGames;
+    }
+    finally {
+        pendingLoad = undefined;
+    }
+};
+exports.fetchAllGames = fetchAllGames;
 //# sourceMappingURL=fetch.js.map

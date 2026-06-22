@@ -5,22 +5,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.filterByStore = exports.filterByName = void 0;
 const fuzzy_search_1 = __importDefault(require("fuzzy-search"));
+// The game catalog rarely changes between searches, so we reuse the fuzzy
+// index and only rebuild it when the underlying list changes.
+let nameIndex;
 const filterByName = (games, name) => {
-    const searcher = new fuzzy_search_1.default(games, ['name'], {
-        caseSensitive: false,
-        sort: true,
-    });
-    return searcher.search(name);
+    if (nameIndex === undefined || nameIndex.games !== games) {
+        nameIndex = {
+            games,
+            searcher: new fuzzy_search_1.default(games, ['name'], {
+                caseSensitive: false,
+                sort: true,
+            }),
+        };
+    }
+    return nameIndex.searcher.search(name);
 };
 exports.filterByName = filterByName;
-const filterByStore = (history, merchants, store) => {
-    const enrichedHistory = history.map((item) => {
-        var _a, _b;
-        const merchantIdStr = (_a = item.merchant_id) === null || _a === void 0 ? void 0 : _a.toString();
-        const merchantName = merchantIdStr && merchants ? ((_b = merchants[merchantIdStr]) === null || _b === void 0 ? void 0 : _b.name) || '' : '';
-        return Object.assign(Object.assign({}, item), { merchantName });
-    });
-    const searcher = new fuzzy_search_1.default(enrichedHistory, ['merchantName'], {
+const filterByStore = (offers, store) => {
+    const searcher = new fuzzy_search_1.default(offers, ['merchant'], {
         caseSensitive: false,
         sort: true,
     });

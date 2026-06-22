@@ -1,4 +1,4 @@
-import { type BasicGameData, type HistoryEntry, type BaseCatalogItem } from './gather';
+import type { BasicGameData, Offer } from './gather';
 declare const filterByName: (games: BasicGameData[], name: string) => BasicGameData[];
-declare const filterByStore: (history: HistoryEntry[], merchants: Record<string, BaseCatalogItem>, store: string) => HistoryEntry[];
+declare const filterByStore: (offers: Offer[], store: string) => Offer[];
 export { filterByName, filterByStore };

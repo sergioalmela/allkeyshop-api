@@ -1,39 +1,31 @@
-import {
-  type BasicGameData,
-  type HistoryEntry,
-  type BaseCatalogItem,
-} from './gather'
 import FuzzySearch from 'fuzzy-search'
+import type { BasicGameData, Offer } from './gather'
+
+// The game catalog rarely changes between searches, so we reuse the fuzzy
+// index and only rebuild it when the underlying list changes.
+let nameIndex:
+  | { games: BasicGameData[]; searcher: FuzzySearch<BasicGameData> }
+  | undefined
 
 const filterByName = (
   games: BasicGameData[],
   name: string
 ): BasicGameData[] => {
-  const searcher = new FuzzySearch(games, ['name'], {
-    caseSensitive: false,
-    sort: true,
-  })
+  if (nameIndex === undefined || nameIndex.games !== games) {
+    nameIndex = {
+      games,
+      searcher: new FuzzySearch(games, ['name'], {
+        caseSensitive: false,
+        sort: true,
+      }),
+    }
+  }
 
-  return searcher.search(name)
+  return nameIndex.searcher.search(name)
 }
 
-const filterByStore = (
-  history: HistoryEntry[],
-  merchants: Record<string, BaseCatalogItem>,
-  store: string
-): HistoryEntry[] => {
-  const enrichedHistory = history.map((item) => {
-    const merchantIdStr = item.merchant_id?.toString()
-    const merchantName =
-      merchantIdStr && merchants ? merchants[merchantIdStr]?.name || '' : ''
-
-    return {
-      ...item,
-      merchantName,
-    }
-  })
-
-  const searcher = new FuzzySearch(enrichedHistory, ['merchantName'], {
+const filterByStore = (offers: Offer[], store: string): Offer[] => {
+  const searcher = new FuzzySearch(offers, ['merchant'], {
     caseSensitive: false,
     sort: true,
   })

@@ -1,52 +1,98 @@
+import * as fetchModule from '../src/fetch'
+import { getGameData, getProductIds } from '../src/gather'
+import { gamesMock } from './mock/games.mock'
 import {
   emptyProductSellingDetailsMock,
   productSellingDetailsMock,
 } from './mock/product-selling-details.mock'
-import { getGameData, getProductIds } from '../src/gather'
-import { gamesMock } from './mock/games.mock'
-import * as fetchModule from '../src/fetch'
 
 jest.mock('../src/fetch', () => ({
   fetchAllGames: jest.fn(),
 }))
 
+const mockEndpoint = (payload: unknown): void => {
+  global.fetch = jest.fn().mockResolvedValue({
+    json: async () => payload,
+  })
+}
+
 describe('Gather', () => {
   describe('getGameData', () => {
-    it('should gather data from a game name and return clean payload', async () => {
-      global.fetch = jest.fn().mockImplementation(async () => ({
-        json: async () => productSellingDetailsMock,
-      }))
+    it('maps the raw history into offers with resolved names and parsed prices', async () => {
+      mockEndpoint(productSellingDetailsMock)
 
       const response = await getGameData(gamesMock, 'EUR', '')
 
-      expect(response).not.toBeUndefined()
-      expect(response!.offers.length).toBe(2)
-      expect(response!.offers[0].merchant).toBe('Kinguin')
-      expect(response!.offers[1].merchant).toBe('G2A')
-      expect(response!.lowestPrices.official!.price).toBe(38.66)
+      expect(response).toBeDefined()
+      expect(response!.offers).toEqual([
+        {
+          merchant: 'Kinguin',
+          edition: 'Standard Edition',
+          region: 'Steam',
+          currentPrice: 38.66,
+          minDiscountPrice: 37.37,
+          couponCode: 'AKSGAME',
+          lastUpdate: '2026-06-19 18:28:55',
+        },
+        {
+          merchant: 'G2A',
+          edition: 'Standard Edition',
+          region: 'Steam',
+          currentPrice: 41.19,
+          minDiscountPrice: 38.52,
+          couponCode: 'AKSHERO',
+          lastUpdate: '2026-06-19 03:02:53',
+        },
+      ])
     })
 
-    it('should gather data from a game name and filter by store', async () => {
-      global.fetch = jest.fn().mockImplementation(async () => ({
-        json: async () => productSellingDetailsMock,
-      }))
+    it('exposes the lowest official and keyshop prices', async () => {
+      mockEndpoint(productSellingDetailsMock)
+
+      const response = await getGameData(gamesMock, 'EUR', '')
+
+      expect(response!.lowestPrices.official).toEqual({
+        merchant: 'Kinguin',
+        price: 38.66,
+        lastUpdate: '2026-06-19 18:28:55',
+      })
+      expect(response!.lowestPrices.keyshops).toEqual({
+        merchant: 'G2A',
+        price: 41.19,
+        lastUpdate: '2026-06-19 03:02:53',
+      })
+    })
+
+    it('requests the chosen currency in upper case', async () => {
+      mockEndpoint(productSellingDetailsMock)
+
+      await getGameData(gamesMock, 'usd', '')
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining('currency=USD')
+      )
+    })
+
+    it('keeps only the offers of the requested store', async () => {
+      mockEndpoint(productSellingDetailsMock)
 
       const response = await getGameData(gamesMock, 'EUR', 'Kinguin')
 
-      expect(response).not.toBeUndefined()
-      expect(response!.offers.length).toBe(1)
+      expect(response!.offers).toHaveLength(1)
       expect(response!.offers[0].merchant).toBe('Kinguin')
     })
 
-    it('should return empty structures when endpoint returns empty dataset', async () => {
-      global.fetch = jest.fn().mockImplementation(async () => ({
-        json: async () => emptyProductSellingDetailsMock,
-      }))
+    it('returns empty offers and no lowest prices for an empty dataset', async () => {
+      mockEndpoint(emptyProductSellingDetailsMock)
 
       const response = await getGameData(gamesMock, 'EUR', '')
 
-      expect(response).not.toBeUndefined()
       expect(response!.offers).toEqual([])
+      expect(response!.lowestPrices).toEqual({ official: null, keyshops: null })
+    })
+
+    it('returns undefined when there are no games to look up', async () => {
+      expect(await getGameData([], 'EUR', '')).toBeUndefined()
     })
   })
 
@@ -55,15 +101,33 @@ describe('Gather', () => {
       jest.clearAllMocks()
     })
 
-    it('should return a list of game Ids', async () => {
-      const expectedGames = [gamesMock[0], gamesMock[1]]
+    it('returns the games whose name fuzzily matches the query', async () => {
       ;(fetchModule.fetchAllGames as jest.Mock).mockResolvedValue(gamesMock)
 
       const productIds = await getProductIds('FIFA 2')
 
-      expect(productIds).not.toBeUndefined()
-      expect(productIds.games.length).toBe(2)
-      expect(productIds.games).toEqual(expectedGames)
+      expect(productIds.status).toBe('success')
+      expect(productIds.games).toEqual([gamesMock[0], gamesMock[1]])
+    })
+
+    it('reports an error when the game catalog is unavailable', async () => {
+      ;(fetchModule.fetchAllGames as jest.Mock).mockResolvedValue(null)
+
+      const productIds = await getProductIds('FIFA 2')
+
+      expect(productIds.status).toBe('error')
+      expect(productIds.games).toEqual([])
+    })
+
+    it('surfaces the error message when fetching the catalog throws', async () => {
+      ;(fetchModule.fetchAllGames as jest.Mock).mockRejectedValue(
+        new Error('network down')
+      )
+
+      const productIds = await getProductIds('FIFA 2')
+
+      expect(productIds.status).toBe('error')
+      expect(productIds.message).toBe('network down')
     })
   })
 })

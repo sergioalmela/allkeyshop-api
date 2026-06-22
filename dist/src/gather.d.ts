@@ -1,34 +1,25 @@
-export interface HistoryEntry {
-    product_id: number;
-    merchant_id: number;
+export interface Offer {
+    merchant: string;
     edition: string;
     region: string;
-    last_price: number;
-    min_discount_price: number;
-    best_discount_code: string | null;
-    start: string;
-    end: string;
-    merchantName?: string;
+    currentPrice: number;
+    minDiscountPrice: number;
+    couponCode: string | null;
+    lastUpdate: string;
 }
-export interface BaseCatalogItem {
-    id: string;
-    name: string;
+export interface LowestPrice {
+    merchant: string;
+    price: number;
+    lastUpdate: string;
 }
-export interface PriceSummary {
-    merchant_id: number;
-    price: string;
-    last_update: string;
+export interface GameOffers {
+    offers: Offer[];
+    lowestPrices: {
+        official: LowestPrice | null;
+        keyshops: LowestPrice | null;
+    };
 }
-export interface ProductSellingDetails {
-    officialMerchants: string;
-    history: HistoryEntry[];
-    editions: Record<string, BaseCatalogItem>;
-    regions: Record<string, BaseCatalogItem>;
-    merchants: Record<string, BaseCatalogItem>;
-    lower_official_price: PriceSummary;
-    lower_keyshops_price: PriceSummary;
-}
-export declare const getGameData: (games: BasicGameData[], currency: string, store: string) => Promise<ProductSellingDetails | undefined>;
+export declare const getGameData: (games: BasicGameData[], currency: string, store: string) => Promise<GameOffers | undefined>;
 export interface ProductIdsResponse {
     status: string;
     games: BasicGameData[];

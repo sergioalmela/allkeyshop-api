@@ -1,4 +1,6 @@
-export const historyMock = [
+import type { Offer } from '../../src/gather'
+
+export const offersMock: Offer[] = [
   {
     merchant: 'Kinguin',
     edition: 'Standard Edition',
@@ -18,8 +20,3 @@ export const historyMock = [
     lastUpdate: '2026-06-19 03:02:53',
   },
 ]
-
-export const merchantsMock = {
-  '47': { id: '47', name: 'Kinguin' },
-  '61': { id: '61', name: 'G2A' },
-}

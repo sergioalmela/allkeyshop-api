@@ -1,59 +1,71 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getProductIds = exports.getGameData = void 0;
-const filter_1 = require("./filter");
 const fetch_1 = require("./fetch");
-const getGameData = (games, currency, store) => __awaiter(void 0, void 0, void 0, function* () {
-    if (games !== undefined && games.length > 0) {
-        const gameId = games[0].id;
-        const response = yield fetch(`https://www.allkeyshop.com/api/price_history_api.php?normalised_name=${gameId}&currency=${currency.toUpperCase()}&database=allkeyshop.com&v2=1`);
-        const data = yield response.json();
-        if (data.history && data.history.length > 0) {
-            if (store !== '') {
-                data.history = (0, filter_1.filterByStore)(data.history, data.merchants, store);
-            }
-        }
-        return data;
-    }
-    return undefined;
+const filter_1 = require("./filter");
+const resolveName = (catalog, id) => catalog?.[String(id)]?.name ?? '';
+const toOffer = (entry, raw) => ({
+    merchant: resolveName(raw.merchants, entry.merchant_id),
+    edition: resolveName(raw.editions, entry.edition),
+    region: resolveName(raw.regions, entry.region),
+    currentPrice: entry.last_price,
+    minDiscountPrice: entry.min_discount_price,
+    couponCode: entry.best_discount_code,
+    lastUpdate: entry.start,
 });
+const toLowestPrice = (summary, raw) => {
+    if (!summary || summary.merchant_id === 0) {
+        return null;
+    }
+    return {
+        merchant: resolveName(raw.merchants, summary.merchant_id),
+        price: Number.parseFloat(summary.price),
+        lastUpdate: summary.last_update,
+    };
+};
+const getGameData = async (games, currency, store) => {
+    if (games === undefined || games.length === 0) {
+        return undefined;
+    }
+    const gameId = games[0].id;
+    const response = await fetch(`https://www.allkeyshop.com/api/price_history_api.php?normalised_name=${gameId}&currency=${currency.toUpperCase()}&database=allkeyshop.com&v2=1`);
+    const raw = await response.json();
+    let offers = (raw.history ?? []).map((entry) => toOffer(entry, raw));
+    if (store !== '') {
+        offers = (0, filter_1.filterByStore)(offers, store);
+    }
+    return {
+        offers,
+        lowestPrices: {
+            official: toLowestPrice(raw.lower_official_price, raw),
+            keyshops: toLowestPrice(raw.lower_keyshops_price, raw),
+        },
+    };
+};
 exports.getGameData = getGameData;
 const noGamesFound = {
     status: 'error',
     games: [],
     message: 'No games found',
 };
-const getProductIds = (name) => __awaiter(void 0, void 0, void 0, function* () {
-    // Read vaks.json file and search for the game name inside games.name
+const getProductIds = async (name) => {
     try {
-        const games = yield (0, fetch_1.fetchAllGames)();
-        if (games != null) {
-            const filteredGames = (0, filter_1.filterByName)(games, name);
-            return {
-                status: 'success',
-                games: filteredGames,
-            };
-        }
-        else {
+        const games = await (0, fetch_1.fetchAllGames)();
+        if (games == null) {
             return noGamesFound;
         }
+        return {
+            status: 'success',
+            games: (0, filter_1.filterByName)(games, name),
+        };
     }
     catch (e) {
         return {
             status: 'error',
             games: [],
-            message: e.message,
+            message: e instanceof Error ? e.message : 'Unknown error',
         };
     }
-});
+};
 exports.getProductIds = getProductIds;
 //# sourceMappingURL=gather.js.map

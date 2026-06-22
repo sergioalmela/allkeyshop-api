@@ -1,7 +1,40 @@
-import { filterByName, filterByStore } from './filter'
 import { fetchAllGames } from './fetch'
+import { filterByName, filterByStore } from './filter'
 
-export interface HistoryEntry {
+// --- Public output shape (what consumers of the API receive) ---
+
+export interface Offer {
+  merchant: string
+  edition: string
+  region: string
+  currentPrice: number
+  minDiscountPrice: number
+  couponCode: string | null
+  lastUpdate: string
+}
+
+export interface LowestPrice {
+  merchant: string
+  price: number
+  lastUpdate: string
+}
+
+export interface GameOffers {
+  offers: Offer[]
+  lowestPrices: {
+    official: LowestPrice | null
+    keyshops: LowestPrice | null
+  }
+}
+
+// --- Raw shape returned by allkeyshop's price_history_api endpoint ---
+
+interface CatalogItem {
+  id: string
+  name: string
+}
+
+interface RawHistoryEntry {
   product_id: number
   merchant_id: number
   edition: string
@@ -11,53 +44,83 @@ export interface HistoryEntry {
   best_discount_code: string | null
   start: string
   end: string
-  merchantName?: string
 }
 
-export interface BaseCatalogItem {
-  id: string
-  name: string
-}
-
-export interface PriceSummary {
+interface RawPriceSummary {
   merchant_id: number
   price: string
   last_update: string
 }
 
-export interface ProductSellingDetails {
+interface RawProductDetails {
   officialMerchants: string
-  history: HistoryEntry[]
-  editions: Record<string, BaseCatalogItem>
-  regions: Record<string, BaseCatalogItem>
-  merchants: Record<string, BaseCatalogItem>
-  lower_official_price: PriceSummary
-  lower_keyshops_price: PriceSummary
+  history: RawHistoryEntry[]
+  editions: Record<string, CatalogItem>
+  regions: Record<string, CatalogItem>
+  merchants: Record<string, CatalogItem>
+  lower_official_price: RawPriceSummary
+  lower_keyshops_price: RawPriceSummary
+}
+
+const resolveName = (
+  catalog: Record<string, CatalogItem> | undefined,
+  id: string | number
+): string => catalog?.[String(id)]?.name ?? ''
+
+const toOffer = (entry: RawHistoryEntry, raw: RawProductDetails): Offer => ({
+  merchant: resolveName(raw.merchants, entry.merchant_id),
+  edition: resolveName(raw.editions, entry.edition),
+  region: resolveName(raw.regions, entry.region),
+  currentPrice: entry.last_price,
+  minDiscountPrice: entry.min_discount_price,
+  couponCode: entry.best_discount_code,
+  lastUpdate: entry.start,
+})
+
+const toLowestPrice = (
+  summary: RawPriceSummary | undefined,
+  raw: RawProductDetails
+): LowestPrice | null => {
+  if (!summary || summary.merchant_id === 0) {
+    return null
+  }
+
+  return {
+    merchant: resolveName(raw.merchants, summary.merchant_id),
+    price: Number.parseFloat(summary.price),
+    lastUpdate: summary.last_update,
+  }
 }
 
 export const getGameData = async (
   games: BasicGameData[],
   currency: string,
   store: string
-): Promise<ProductSellingDetails | undefined> => {
-  if (games !== undefined && games.length > 0) {
-    const gameId = games[0].id
-    const response = await fetch(
-      `https://www.allkeyshop.com/api/price_history_api.php?normalised_name=${gameId}&currency=${currency.toUpperCase()}&database=allkeyshop.com&v2=1`
-    )
-
-    const data: ProductSellingDetails = await response.json()
-
-    if (data.history && data.history.length > 0) {
-      if (store !== '') {
-        data.history = filterByStore(data.history, data.merchants, store)
-      }
-    }
-
-    return data
+): Promise<GameOffers | undefined> => {
+  if (games === undefined || games.length === 0) {
+    return undefined
   }
 
-  return undefined
+  const gameId = games[0].id
+  const response = await fetch(
+    `https://www.allkeyshop.com/api/price_history_api.php?normalised_name=${gameId}&currency=${currency.toUpperCase()}&database=allkeyshop.com&v2=1`
+  )
+
+  const raw: RawProductDetails = await response.json()
+
+  let offers = (raw.history ?? []).map((entry) => toOffer(entry, raw))
+
+  if (store !== '') {
+    offers = filterByStore(offers, store)
+  }
+
+  return {
+    offers,
+    lowestPrices: {
+      official: toLowestPrice(raw.lower_official_price, raw),
+      keyshops: toLowestPrice(raw.lower_keyshops_price, raw),
+    },
+  }
 }
 
 export interface ProductIdsResponse {
@@ -71,7 +134,7 @@ export interface BasicGameData {
   name: string
 }
 
-const noGamesFound = {
+const noGamesFound: ProductIdsResponse = {
   status: 'error',
   games: [],
   message: 'No games found',
@@ -80,25 +143,22 @@ const noGamesFound = {
 export const getProductIds = async (
   name: string
 ): Promise<ProductIdsResponse> => {
-  // Read vaks.json file and search for the game name inside games.name
   try {
     const games = await fetchAllGames()
 
-    if (games != null) {
-      const filteredGames = filterByName(games, name)
-
-      return {
-        status: 'success',
-        games: filteredGames,
-      }
-    } else {
+    if (games == null) {
       return noGamesFound
+    }
+
+    return {
+      status: 'success',
+      games: filterByName(games, name),
     }
   } catch (e) {
     return {
       status: 'error',
       games: [],
-      message: e.message,
+      message: e instanceof Error ? e.message : 'Unknown error',
     }
   }
 }
