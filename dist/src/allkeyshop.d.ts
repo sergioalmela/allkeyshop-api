@@ -1,4 +1,4 @@
-import { type ProductIdsResponse, type ProductSellingDetails } from './gather';
+import { type GameOffers, type ProductIdsResponse } from './gather';
 export declare class AllkeyshopService {
     private readonly currency;
     private readonly platform;
@@ -8,7 +8,7 @@ export declare class AllkeyshopService {
         platform?: string;
         store?: string;
     });
-    search(name: string): Promise<ProductSellingDetails>;
+    search(name: string): Promise<GameOffers>;
     find(name: string): Promise<ProductIdsResponse>;
     private appendPlatform;
     private emptyData;

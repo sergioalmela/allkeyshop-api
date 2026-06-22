@@ -36,48 +36,41 @@ allkeyshopService.search('Borderlands 3').then((data) => {
 
 // Output:
 // {
-//     success: true,
 //     offers: [
-//     {
-//         id: 133508130,
-//         affiliateUrl: 'https://www.g2a.com/borderlands-3-standard-edition-steam-key-europe-i10000186970058?aid=13344657&gtag=dccb1b16c9&utm_content=COM_GLOBAL_PB_PLUS_GAM_LISTING_NOR_allkeyshopPLUS',
-//         isActive: true,
-//         merchant: '61616',
-//         price: [Object],
-//         edition: '1',
-//         region: '9',
-//         stock: 'InStock',
-//         platform: 'steam'
-//     },
-//     ...
+//         {
+//             merchant: 'Kinguin',
+//             edition: 'Standard Edition',
+//             region: 'Steam',
+//             currentPrice: 38.66,
+//             minDiscountPrice: 37.37,
+//             couponCode: 'AKSGAME',
+//             lastUpdate: '2026-06-19 18:28:55'
+//         },
+//         ...
 //     ],
-//     merchants: {
-//     '1': {
-//         id: '1',
-//             name: 'Steam',
-//             aggregateRating: [Object],
-//             types: 'Official Store',
-//             searchable: 1,
-//             paymentMethods: [Object],
-//             logoSlug: 'steam',
-//             reviewUrl: 'https://www.allkeyshop.com/blog/review/steam/'
-//     },
-//     ...
-//     },
-//     editions: {
-//         '1': { id: '1', name: 'Standard' },
-//         ...
-//     },
-//     regions: {
-//         '1': { id: '1', name: 'GLOBAL', filterName: 'PUBLISHER GLOBAL' },
-//         ...
+//     lowestPrices: {
+//         official: {
+//             merchant: 'Kinguin',
+//             price: 38.66,
+//             lastUpdate: '2026-06-19 18:28:55'
+//         },
+//         keyshops: {
+//             merchant: 'G2A',
+//             price: 41.19,
+//             lastUpdate: '2026-06-19 03:02:53'
+//         }
 //     }
 // }
 ```
 
+Each offer already has its `merchant`, `edition` and `region` resolved to a
+readable name. `lowestPrices.official` is the cheapest official-store price and
+`lowestPrices.keyshops` the cheapest key-reseller price (either may be `null`
+when no data is available).
+
 ### Get game names without data
 ```typescript
-allkeyshopService.find('FIFA 22').then((data) => {
+allkeyshopService.find('DARK SOULS III').then((data) => {
     console.log(data)
 })
 
@@ -85,8 +78,8 @@ allkeyshopService.find('FIFA 22').then((data) => {
 // {
 //     status: 'success', 
 //     games: [
-//          { id: '83060', name: 'FIFA 22' },
-//          { id: '83063', name: 'FIFA 22 PS4' },
+//          { id: '83060', name: 'DARK SOULS' },
+//          { id: '83063', name: 'DARK SOULS REMASTERED' },
 //          ...
 //     ]
 // }

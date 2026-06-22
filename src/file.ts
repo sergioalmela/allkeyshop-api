@@ -1,17 +1,11 @@
-import * as fs from 'fs'
-import * as path from 'path'
+import * as os from 'node:os'
+import * as path from 'node:path'
 
-const rootDir = (): string => {
-  let currentDir = __dirname
-  while (!fs.existsSync(path.join(currentDir, 'package.json'))) {
-    currentDir = path.join(currentDir, '..')
-  }
+const CACHE_DIR_NAME = 'allkeyshop-api'
 
-  return currentDir
-}
+// Directory where the game catalog is cached. It lives in the OS temp
+// directory so the cache keeps working when the package is installed as a
+// read-only dependency inside node_modules.
+const cacheDir = (): string => path.join(os.tmpdir(), CACHE_DIR_NAME)
 
-const downloadDir = (): string => {
-  return path.join(rootDir(), 'dist/public/')
-}
-
-export { rootDir, downloadDir }
+export { cacheDir }

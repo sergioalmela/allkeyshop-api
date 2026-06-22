@@ -1,7 +1,3 @@
-import { type BasicGameData } from './gather';
-export interface ProductListResponse {
-    status: string;
-    games?: BasicGameData[];
-}
+import type { BasicGameData } from './gather';
 declare const fetchAllGames: () => Promise<BasicGameData[] | undefined>;
 export { fetchAllGames };

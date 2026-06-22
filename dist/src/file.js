@@ -33,19 +33,13 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.downloadDir = exports.rootDir = void 0;
-const fs = __importStar(require("fs"));
-const path = __importStar(require("path"));
-const rootDir = () => {
-    let currentDir = __dirname;
-    while (!fs.existsSync(path.join(currentDir, 'package.json'))) {
-        currentDir = path.join(currentDir, '..');
-    }
-    return currentDir;
-};
-exports.rootDir = rootDir;
-const downloadDir = () => {
-    return path.join(rootDir(), 'dist/public/');
-};
-exports.downloadDir = downloadDir;
+exports.cacheDir = void 0;
+const os = __importStar(require("node:os"));
+const path = __importStar(require("node:path"));
+const CACHE_DIR_NAME = 'allkeyshop-api';
+// Directory where the game catalog is cached. It lives in the OS temp
+// directory so the cache keeps working when the package is installed as a
+// read-only dependency inside node_modules.
+const cacheDir = () => path.join(os.tmpdir(), CACHE_DIR_NAME);
+exports.cacheDir = cacheDir;
 //# sourceMappingURL=file.js.map
