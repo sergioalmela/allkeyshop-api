@@ -121,18 +121,14 @@ describe('Game catalog cache', () => {
     },
   ]
 
-  it.each(
-    invalidPayloads
-  )('recovers from an invalid cache: %j', async (data) => {
+  it.each(invalidPayloads)('recovers from bad cache %#', async (data) => {
     writeCatalog(data)
 
     expect(await fetchAllGames()).toEqual(games)
     expect(fetchMock).toHaveBeenCalledTimes(1)
   })
 
-  it.each(
-    invalidPayloads
-  )('does not cache an invalid response: %j', async (data) => {
+  it.each(invalidPayloads)('rejects bad responses %#', async (data) => {
     fetchMock.mockResolvedValueOnce(new Response(JSON.stringify(data)))
 
     expect(await fetchAllGames()).toBeUndefined()
