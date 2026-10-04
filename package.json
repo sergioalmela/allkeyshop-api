@@ -33,15 +33,15 @@
   },
   "homepage": "https://github.com/sergioalmela/allkeyshop-api",
   "dependencies": {
-    "fuzzy-search": "^3.2.1"
+    "fuzzy-search": "^3.3.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.0",
+    "@biomejs/biome": "^2.5.15",
     "@types/fuzzy-search": "^2.1.5",
     "@types/jest": "^30.0.0",
-    "@types/node": "^26.0.0",
-    "jest": "^30.4.2",
-    "ts-jest": "^29.4.11",
+    "@types/node": "^26.6.4",
+    "jest": "^30.5.2",
+    "ts-jest": "^29.4.14",
     "ts-loader": "^9.6.2",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3"
