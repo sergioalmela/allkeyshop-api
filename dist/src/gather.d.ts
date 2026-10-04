@@ -1,3 +1,4 @@
+/** A recorded offer from the upstream price history. */
 export interface Offer {
     merchant: string;
     edition: string;
@@ -7,6 +8,7 @@ export interface Offer {
     couponCode: string | null;
     lastUpdate: string;
 }
+/** A historical low across all stores, independent of the store filter. */
 export interface LowestPrice {
     merchant: string;
     price: number;

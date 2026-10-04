@@ -61,6 +61,16 @@ describe('AllkeyshopService', () => {
       expect(result).toEqual(emptyOffers)
     })
 
+    it('propagates pricing failures to the caller', async () => {
+      getGameData.mockRejectedValue(
+        new Error('Failed to fetch game pricing: HTTP 503')
+      )
+
+      await expect(
+        new AllkeyshopService().search('Borderlands 3')
+      ).rejects.toThrow('HTTP 503')
+    })
+
     it('passes the configured currency and store to the data fetch', async () => {
       const service = new AllkeyshopService({ currency: 'USD', store: 'Steam' })
 
