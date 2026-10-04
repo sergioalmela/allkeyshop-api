@@ -10,8 +10,11 @@ consumers import `AllkeyshopService` and call `search()` / `find()`.
 
 ## Commands
 
+Use Node.js 24 LTS for development, matching CI.
+
 - `npm run build` — compile with `tsc` to `dist/` (emits `dist/src` + `dist/config` only).
-- `npm test` — runs `build` then Jest (ts-jest type-checks the tests).
+- `npm run typecheck` — TypeScript 7 checks source, configuration constants, and tests without emitting files.
+- `npm test` — runs `typecheck`, `build`, then Jest against `dist/`. Babel transforms the tests and hoists Jest mocks.
 - `npm run check` — Biome: format + lint + organise imports, with `--write`. Use this before committing.
 - `npm run lint` / `npm run format` — lint-only / format-only.
 
@@ -47,6 +50,10 @@ filters) · `config/constants.ts` (defaults).
 - **Raw vs public types**: the raw API shapes (`Raw*`) are internal to `gather.ts`; only
   the transformed `Offer` / `LowestPrice` / `GameOffers` types are exported. Keep that boundary.
 - **`dist/` is committed** and shipped (`files: ["dist"]`). Rebuild it when source changes.
+- **Compiler and test transforms are separate**: TypeScript 7 builds and type-checks;
+  Babel strips test types and converts their modules for Jest. Imports from
+  `../src/` resolve to the TypeScript build in `dist/src/`. Test type-checking belongs
+  in `tsconfig.typecheck.json`; tests must stay out of the published `dist/` build.
 - **Tests are behavioural** — assert observable behaviour, not implementation/existence.
   Mocks live in `tests/mock/`.
 - Formatting is Biome-enforced: single quotes, no semicolons, 2-space indent. Non-null

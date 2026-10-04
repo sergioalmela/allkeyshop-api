@@ -10,12 +10,13 @@
   "scripts": {
     "prepare": "npm run build",
     "build": "tsc",
+    "typecheck": "tsc --noEmit -p tsconfig.typecheck.json",
     "format": "biome format --write",
     "format:check": "biome format",
     "lint": "biome lint",
     "lint:fix": "biome lint --write",
     "check": "biome check --write",
-    "test": "npm run build && jest --verbose"
+    "test": "npm run typecheck && npm run build && jest --verbose"
   },
   "repository": {
     "type": "git",
@@ -36,14 +37,15 @@
     "fuzzy-search": "^3.3.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@babel/plugin-transform-modules-commonjs": "^7.29.7",
+    "@babel/preset-typescript": "^7.29.7",
     "@biomejs/biome": "^2.5.15",
     "@types/fuzzy-search": "^2.1.5",
     "@types/jest": "^30.0.0",
-    "@types/node": "^26.6.4",
+    "@types/node": "^24.19.1",
+    "babel-jest": "^30.5.2",
     "jest": "^30.5.2",
-    "ts-jest": "^29.4.14",
-    "ts-loader": "^9.6.2",
-    "ts-node": "^10.9.2",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   }
 }
