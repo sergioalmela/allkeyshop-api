@@ -125,9 +125,7 @@ describe('Gather', () => {
       { ...entry, best_discount_code: {} },
     ]
 
-    it.each(
-      invalidEntries
-    )('omits malformed history entries: %j', async (invalidEntry) => {
+    it.each(invalidEntries)('omits bad history %#', async (invalidEntry) => {
       mockEndpoint({
         ...productSellingDetailsMock,
         history: [invalidEntry, ...productSellingDetailsMock.history],
@@ -183,7 +181,7 @@ describe('Gather', () => {
       [],
       { '47': { name: 47 } },
       { '47': { name: '  ' } },
-    ])('omits offers and summaries with an invalid merchant catalog: %j', async (merchants) => {
+    ])('omits invalid merchants %#', async (merchants) => {
       mockEndpoint({ ...productSellingDetailsMock, merchants })
 
       const response = await getGameData(gamesMock, 'EUR', '')
@@ -270,13 +268,14 @@ describe('Gather', () => {
       )
     })
 
-    it.each([
+    const invalidPayloads = [
       null,
       false,
       {},
       { history: null },
       { history: {} },
-    ])('rejects an invalid pricing payload: %j', async (payload) => {
+    ]
+    it.each(invalidPayloads)('rejects bad payloads %#', async (payload) => {
       mockEndpoint(payload)
 
       await expect(getGameData(gamesMock, 'EUR', '')).rejects.toThrow(
