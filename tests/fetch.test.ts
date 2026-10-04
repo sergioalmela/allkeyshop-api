@@ -14,7 +14,7 @@ describe('Game catalog cache', () => {
   let directory: string
   let catalogFile: string
   let fetchAllGames: typeof import('../src/fetch').fetchAllGames
-  let fetchMock: jest.MockedFunction<typeof fetch>
+  let fetchMock: jest.SpiedFunction<typeof fetch>
 
   const writeCatalog = (data: unknown, ageMs = 0): void => {
     fs.writeFileSync(catalogFile, JSON.stringify(data))
