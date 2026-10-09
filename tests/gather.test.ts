@@ -26,6 +26,15 @@ describe('Gather', () => {
   })
 
   describe('getGameData', () => {
+    // The mock records were last seen on 2026-06-19.
+    beforeEach(() => {
+      jest.useFakeTimers({ now: new Date('2026-06-20T00:00:00Z') })
+    })
+
+    afterEach(() => {
+      jest.useRealTimers()
+    })
+
     it('maps the raw history into offers with resolved names and parsed prices', async () => {
       mockEndpoint(productSellingDetailsMock)
 
@@ -41,6 +50,7 @@ describe('Gather', () => {
           minDiscountPrice: 37.37,
           couponCode: 'AKSGAME',
           lastUpdate: '2026-06-19 18:28:55',
+          lastSeen: '2026-06-19 18:28:55',
         },
         {
           merchant: 'G2A',
@@ -50,25 +60,205 @@ describe('Gather', () => {
           minDiscountPrice: 38.52,
           couponCode: 'AKSHERO',
           lastUpdate: '2026-06-19 03:02:53',
+          lastSeen: '2026-06-19 03:02:53',
         },
       ])
     })
 
-    it('exposes the lowest official and keyshop prices', async () => {
+    it('exposes the upstream historical lows', async () => {
       mockEndpoint(productSellingDetailsMock)
 
       const response = await getGameData(gamesMock, 'EUR', '')
 
-      expect(response!.lowestPrices.official).toEqual({
+      expect(response!.historicalLows.official).toEqual({
         merchant: 'Kinguin',
         price: 38.66,
         lastUpdate: '2026-06-19 18:28:55',
       })
-      expect(response!.lowestPrices.keyshops).toEqual({
+      expect(response!.historicalLows.keyshops).toEqual({
         merchant: 'G2A',
         price: 41.19,
         lastUpdate: '2026-06-19 03:02:53',
       })
+    })
+
+    const entry = productSellingDetailsMock.history[0]
+    const g2aEntry = productSellingDetailsMock.history[1]
+    const moreEditions = {
+      ...productSellingDetailsMock.editions,
+      '2': { id: '2', name: 'Deluxe Edition' },
+      '3': { id: '3', name: 'Gold Edition' },
+    }
+
+    it('exposes the current lowest official and keyshop prices after coupons', async () => {
+      mockEndpoint({
+        ...productSellingDetailsMock,
+        editions: moreEditions,
+        history: [
+          ...productSellingDetailsMock.history,
+          {
+            ...g2aEntry,
+            edition: '2',
+            last_price: 9.99,
+            min_discount_price: 15,
+          },
+          {
+            ...g2aEntry,
+            edition: '3',
+            last_price: undefined,
+            min_discount_price: 12.5,
+          },
+        ],
+        lower_official_price: null,
+        lower_keyshops_price: null,
+      })
+
+      const response = await getGameData(gamesMock, 'EUR', '')
+
+      expect(response!.lowestPrices).toEqual({
+        official: {
+          merchant: 'Kinguin',
+          price: 37.37,
+          lastUpdate: '2026-06-19 18:28:55',
+        },
+        keyshops: {
+          merchant: 'G2A',
+          price: 12.5,
+          lastUpdate: '2026-06-19 03:02:53',
+        },
+      })
+    })
+
+    it('computes the current lows across all stores despite the store filter', async () => {
+      mockEndpoint(productSellingDetailsMock)
+
+      const response = await getGameData(gamesMock, 'EUR', 'Kinguin')
+
+      expect(response!.offers.map((offer) => offer.merchant)).toEqual([
+        'Kinguin',
+      ])
+      expect(response!.lowestPrices.keyshops!.merchant).toBe('G2A')
+    })
+
+    it('treats every merchant as a keyshop when none is official', async () => {
+      mockEndpoint({ ...productSellingDetailsMock, officialMerchants: '' })
+
+      const response = await getGameData(gamesMock, 'EUR', '')
+
+      expect(response!.lowestPrices.official).toBeNull()
+      expect(response!.lowestPrices.keyshops!.price).toBe(37.37)
+    })
+
+    it.each([
+      undefined,
+      null,
+      47,
+      '47,',
+      '47, 61',
+      'steam',
+      '0,61',
+      '99999999999999999999',
+    ])(
+      'reports no current lows for an invalid official merchant list: %j',
+      async (officialMerchants) => {
+        mockEndpoint({ ...productSellingDetailsMock, officialMerchants })
+
+        const response = await getGameData(gamesMock, 'EUR', '')
+
+        expect(response!.offers).toHaveLength(2)
+        expect(response!.lowestPrices).toEqual({
+          official: null,
+          keyshops: null,
+        })
+      }
+    )
+
+    it('keeps only the newest record of each listing', async () => {
+      const older = {
+        ...entry,
+        last_price: 30,
+        start: '2026-06-10 00:00:00',
+        end: '2026-06-12 00:00:00',
+      }
+      mockEndpoint({
+        ...productSellingDetailsMock,
+        history: [older, entry, { ...older, start: '2026-06-01 00:00:00' }],
+      })
+
+      const response = await getGameData(gamesMock, 'EUR', '')
+
+      expect(response!.offers).toHaveLength(1)
+      expect(response!.offers[0]).toMatchObject({
+        currentPrice: 38.66,
+        lastSeen: '2026-06-19 18:28:55',
+      })
+    })
+
+    it('drops a listing whose newest record is invalid', async () => {
+      mockEndpoint({
+        ...productSellingDetailsMock,
+        history: [
+          { ...entry, end: '2026-06-19 20:00:00', min_discount_price: '30' },
+          ...productSellingDetailsMock.history,
+        ],
+      })
+
+      const response = await getGameData(gamesMock, 'EUR', '')
+
+      expect(response!.offers.map((offer) => offer.merchant)).toEqual(['G2A'])
+    })
+
+    it('prefers the later record when two were last seen together', async () => {
+      const earlier = { ...entry, last_price: 30, start: '2026-06-18 00:00:00' }
+      mockEndpoint({
+        ...productSellingDetailsMock,
+        history: [entry, earlier],
+      })
+
+      const response = await getGameData(gamesMock, 'EUR', '')
+
+      expect(response!.offers).toHaveLength(1)
+      expect(response!.offers[0].currentPrice).toBe(38.66)
+    })
+
+    it('drops listings not seen in the last seven days', async () => {
+      mockEndpoint({
+        ...productSellingDetailsMock,
+        history: [
+          { ...entry, end: '2026-06-13 00:00:00' },
+          { ...g2aEntry, end: '2026-06-12 23:59:59' },
+        ],
+      })
+
+      const response = await getGameData(gamesMock, 'EUR', '')
+
+      expect(response!.offers.map((offer) => offer.merchant)).toEqual([
+        'Kinguin',
+      ])
+    })
+
+    it('keeps a listing without an upstream price with a null current price', async () => {
+      mockEndpoint({
+        ...productSellingDetailsMock,
+        history: [
+          { ...entry, last_price: undefined, best_discount_code: undefined },
+          { ...g2aEntry, last_price: null },
+        ],
+      })
+
+      const response = await getGameData(gamesMock, 'EUR', '')
+
+      expect(response!.offers).toEqual([
+        expect.objectContaining({
+          merchant: 'Kinguin',
+          currentPrice: null,
+          minDiscountPrice: 37.37,
+          couponCode: null,
+        }),
+        expect.objectContaining({ merchant: 'G2A', currentPrice: null }),
+      ])
+      expect(response!.lowestPrices.official!.price).toBe(37.37)
+      expect(response!.lowestPrices.keyshops!.price).toBe(38.52)
     })
 
     it('requests the chosen currency in upper case', async () => {
@@ -97,18 +287,20 @@ describe('Gather', () => {
 
       expect(response!.offers).toEqual([])
       expect(response!.lowestPrices).toEqual({ official: null, keyshops: null })
+      expect(response!.historicalLows).toEqual({
+        official: null,
+        keyshops: null,
+      })
     })
 
     it('returns undefined when there are no games to look up', async () => {
       expect(await getGameData([], 'EUR', '')).toBeUndefined()
     })
 
-    const entry = productSellingDetailsMock.history[0]
     const invalidEntries = [
       false,
       null,
       {},
-      { ...entry, last_price: undefined },
       { ...entry, last_price: '38.66' },
       { ...entry, last_price: Number.NaN },
       { ...entry, last_price: Number.POSITIVE_INFINITY },
@@ -122,6 +314,8 @@ describe('Gather', () => {
       { ...entry, region: {} },
       { ...entry, start: 'yesterday' },
       { ...entry, start: '2026-02-30 18:28:55' },
+      { ...entry, end: undefined },
+      { ...entry, end: 'today' },
       { ...entry, best_discount_code: {} },
     ]
 
@@ -188,6 +382,10 @@ describe('Gather', () => {
 
       expect(response!.offers).toEqual([])
       expect(response!.lowestPrices).toEqual({ official: null, keyshops: null })
+      expect(response!.historicalLows).toEqual({
+        official: null,
+        keyshops: null,
+      })
     })
 
     it.each([
@@ -210,8 +408,8 @@ describe('Gather', () => {
 
       const response = await getGameData(gamesMock, 'EUR', '')
 
-      expect(response!.lowestPrices.official).toBeNull()
-      expect(response!.lowestPrices.keyshops!.price).toBe(41.19)
+      expect(response!.historicalLows.official).toBeNull()
+      expect(response!.historicalLows.keyshops!.price).toBe(41.19)
     })
 
     it('preserves a valid zero historical low', async () => {
@@ -225,7 +423,7 @@ describe('Gather', () => {
 
       const response = await getGameData(gamesMock, 'EUR', '')
 
-      expect(response!.lowestPrices.official!.price).toBe(0)
+      expect(response!.historicalLows.official!.price).toBe(0)
     })
 
     it.each([
@@ -247,8 +445,8 @@ describe('Gather', () => {
 
       const response = await getGameData(gamesMock, 'EUR', '')
 
-      expect(response!.lowestPrices.official).toBeNull()
-      expect(response!.lowestPrices.keyshops!.price).toBe(41.19)
+      expect(response!.historicalLows.official).toBeNull()
+      expect(response!.historicalLows.keyshops!.price).toBe(41.19)
     })
 
     it('omits unresolved offers while preserving records with valid names', async () => {
@@ -333,6 +531,7 @@ describe('Gather', () => {
 
       expect(productIds.status).toBe('error')
       expect(productIds.games).toEqual([])
+      expect(productIds.message).toBe('Game catalog unavailable')
     })
 
     it('surfaces the error message when fetching the catalog throws', async () => {

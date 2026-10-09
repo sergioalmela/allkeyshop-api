@@ -20,14 +20,17 @@ const gameOffers: GameOffers = {
       minDiscountPrice: 37.37,
       couponCode: 'AKSGAME',
       lastUpdate: '2026-06-19 18:28:55',
+      lastSeen: '2026-06-19 18:28:55',
     },
   ],
   lowestPrices: { official: null, keyshops: null },
+  historicalLows: { official: null, keyshops: null },
 }
 
 const emptyOffers: GameOffers = {
   offers: [],
   lowestPrices: { official: null, keyshops: null },
+  historicalLows: { official: null, keyshops: null },
 }
 
 describe('AllkeyshopService', () => {
@@ -44,12 +47,25 @@ describe('AllkeyshopService', () => {
       expect(result).toEqual(gameOffers)
     })
 
-    it('returns empty offers when the game cannot be found', async () => {
-      getProductIds.mockResolvedValue({ status: 'error', games: [] })
+    it('returns empty offers when no game matches', async () => {
+      getProductIds.mockResolvedValue({ status: 'success', games: [] })
+      getGameData.mockResolvedValue(undefined)
 
       const result = await new AllkeyshopService().search('Unknown game')
 
       expect(result).toEqual(emptyOffers)
+    })
+
+    it('rejects when the game catalog is unavailable', async () => {
+      getProductIds.mockResolvedValue({
+        status: 'error',
+        games: [],
+        message: 'Game catalog unavailable',
+      })
+
+      await expect(
+        new AllkeyshopService().search('Borderlands 3')
+      ).rejects.toThrow('Game catalog unavailable')
       expect(getGameData).not.toHaveBeenCalled()
     })
 

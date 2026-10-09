@@ -27,8 +27,9 @@ export class AllkeyshopService {
 
     const games = await getProductIds(name)
 
+    // A lookup error is a failure, not a missing game: no match is `success`.
     if (games.status === 'error') {
-      return this.emptyData()
+      throw new Error(games.message ?? 'Game lookup failed')
     }
 
     const response = await getGameData(games.games, this.currency, this.store)
@@ -49,6 +50,10 @@ export class AllkeyshopService {
     return {
       offers: [],
       lowestPrices: {
+        official: null,
+        keyshops: null,
+      },
+      historicalLows: {
         official: null,
         keyshops: null,
       },

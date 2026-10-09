@@ -1,5 +1,5 @@
 export const productSellingDetailsMock = {
-  officialMerchants: '47,61',
+  officialMerchants: '47',
   history: [
     {
       product_id: 134968119,

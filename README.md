@@ -24,11 +24,11 @@ const options = {
 
 const allkeyshopService = new AllkeyshopService(options)
 ```
-* Currency: Get recorded prices in the selected currency. Default: eur
+* Currency: Get prices in the selected currency. Default: eur
 * Platform: Look up games for the selected platform. Default: '' (PC). Possible values: 'PS5', 'Xbox One', 'Nintendo Switch' etc.
 * Store: Filter by selected store. Default: '' (any). Possible values: 'steam', 'origin', 'ea-app', 'uplay', 'gog', 'epic' etc.
 
-### Get recorded game prices by name
+### Get current game prices by name
 ```typescript
 allkeyshopService.search('Borderlands 3').then((data) => {
     console.log(data)
@@ -38,45 +38,63 @@ allkeyshopService.search('Borderlands 3').then((data) => {
 // {
 //     offers: [
 //         {
-//             merchant: 'Kinguin',
+//             merchant: 'Steam',
 //             edition: 'Standard Edition',
 //             region: 'Steam',
-//             currentPrice: 38.66,
-//             minDiscountPrice: 37.37,
-//             couponCode: 'AKSGAME',
-//             lastUpdate: '2026-06-19 18:28:55'
+//             currentPrice: null,
+//             minDiscountPrice: 59.99,
+//             couponCode: null,
+//             lastUpdate: '2026-10-08 17:17:01',
+//             lastSeen: '2026-10-09 00:02:35'
 //         },
 //         ...
 //     ],
 //     lowestPrices: {
 //         official: {
-//             merchant: 'Kinguin',
-//             price: 38.66,
-//             lastUpdate: '2026-06-19 18:28:55'
+//             merchant: 'Gamesplanet US',
+//             price: 48.01,
+//             lastUpdate: '2026-10-07 12:35:26'
 //         },
 //         keyshops: {
-//             merchant: 'G2A',
-//             price: 41.19,
-//             lastUpdate: '2026-06-19 03:02:53'
+//             merchant: 'GameBoost',
+//             price: 2.96,
+//             lastUpdate: '2026-10-09 03:33:04'
+//         }
+//     },
+//     historicalLows: {
+//         official: {
+//             merchant: 'Steam',
+//             price: 2.99,
+//             lastUpdate: '2025-07-10 16:56:31'
+//         },
+//         keyshops: {
+//             merchant: 'Kinguin',
+//             price: 1.6,
+//             lastUpdate: '2026-07-22 08:19:20'
 //         }
 //     }
 // }
 ```
 
-Each offer has its `merchant`, `edition` and `region` resolved to a readable
-name. The upstream endpoint supplies **price history**: `offers` contains
-recorded prices and may include multiple records for the same product.
-`currentPrice` retains the upstream record's `last_price` and `lastUpdate` is
-the start of that history record. Current stock and availability require a
-separate live source. Incomplete or malformed records are omitted.
+`offers` has one entry per merchant, edition and region: the newest price
+record, if it was seen in the last 7 days. `merchant`, `edition` and `region`
+are resolved to readable names. Incomplete or malformed records are omitted.
 
-`lowestPrices.official` and `lowestPrices.keyshops` are the **historical lows**
-for official stores and key resellers, respectively. Either may be `null` when
-no valid data is available. The `store` option filters `offers`; the historical
-lows remain for the entire game across all stores.
+* `minDiscountPrice`: the best recorded price after coupon. Always present.
+* `currentPrice` and `couponCode`: the upstream fills these only when a price
+  record closes. The newest record is usually still open, so both are often
+  `null`.
+* `lastUpdate`: when the record started. `lastSeen`: when the price was last
+  observed.
 
-Pricing HTTP errors and malformed response envelopes reject `search()`.
-An unavailable game catalog or no matching game returns empty offers.
+`lowestPrices.official` and `lowestPrices.keyshops` are the cheapest current
+`minDiscountPrice` at official stores and at key resellers; their `lastUpdate`
+is when that price was last seen. `historicalLows` holds the all-time lows
+reported by the upstream. Any of them may be `null`. Both cover the whole game,
+across every edition and region: the `store` option only filters `offers`.
+
+`search()` rejects when the game catalog or the pricing data cannot be loaded.
+When no game matches, it returns empty offers.
 
 ### Get game names without data
 ```typescript
@@ -95,10 +113,13 @@ allkeyshopService.find('DARK SOULS III').then((data) => {
 // }
 ```
 
-## Features
-Search for games and retrieve recorded prices for each platform
+When no game matches, `games` is empty. When the game catalog cannot be loaded,
+`status` is `'error'` and `message` says why.
 
-* Search games and get price history, including official stores and key resellers
+## Features
+Search for games and get their current prices for each platform
+
+* Search games and get current prices and lows, including official stores and key resellers
 * Filter by platform
 * Filter by store
 * Search by specific currency

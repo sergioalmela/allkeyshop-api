@@ -16,8 +16,9 @@ class AllkeyshopService {
     async search(name) {
         name = this.appendPlatform(name);
         const games = await (0, gather_1.getProductIds)(name);
+        // A lookup error is a failure, not a missing game: no match is `success`.
         if (games.status === 'error') {
-            return this.emptyData();
+            throw new Error(games.message ?? 'Game lookup failed');
         }
         const response = await (0, gather_1.getGameData)(games.games, this.currency, this.store);
         return response ?? this.emptyData();
@@ -33,6 +34,10 @@ class AllkeyshopService {
         return {
             offers: [],
             lowestPrices: {
+                official: null,
+                keyshops: null,
+            },
+            historicalLows: {
                 official: null,
                 keyshops: null,
             },
