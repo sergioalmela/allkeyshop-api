@@ -9,6 +9,7 @@ export const offersMock: Offer[] = [
     minDiscountPrice: 37.37,
     couponCode: 'AKSGAME',
     lastUpdate: '2026-06-19 18:28:55',
+    lastSeen: '2026-06-19 18:28:55',
   },
   {
     merchant: 'G2A',
@@ -18,5 +19,6 @@ export const offersMock: Offer[] = [
     minDiscountPrice: 38.52,
     couponCode: 'AKSHERO',
     lastUpdate: '2026-06-19 03:02:53',
+    lastSeen: '2026-06-19 03:02:53',
   },
 ]

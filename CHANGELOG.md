@@ -1,3 +1,33 @@
+# 3.0.0
+## Breaking changes
+- `search()` returns current offers instead of the full price history. `offers`
+  has one entry per merchant, edition and region: the newest record, if it was
+  seen in the last 7 days. Each offer has a new `lastSeen` field.
+- `currentPrice` and `couponCode` are `null` when the upstream has not filled
+  them yet. This is usual for the newest, still-open price record.
+- `lowestPrices` is the cheapest current `minDiscountPrice` at official stores
+  and at key resellers, across all editions and regions. Its `lastUpdate` is
+  when that price was last seen. The previous values, the upstream all-time
+  lows, moved to the new `historicalLows` field.
+- `search()` rejects when the game catalog cannot be loaded or the pricing
+  request fails. It still returns empty offers when no game matches. `find()`
+  reports a catalog failure as `status: 'error'` with the message
+  `'Game catalog unavailable'`.
+
+## Fixes
+- Validate pricing records and omit malformed or unresolved ones instead of
+  returning `undefined` prices or names.
+- Recover from an unreadable or invalid catalog cache, write it atomically, and
+  apply the one-day expiry to the in-memory catalog too.
+- Reject HTTP errors from both endpoints instead of parsing them as data, and
+  encode the pricing request parameters.
+
+## Tooling
+- TypeScript 7, Biome 2.5.15, Jest 30.5. Develop on Node 24 LTS.
+- Replace ts-jest with babel-jest and add `npm run typecheck`; tests run
+  against the compiled `dist/`. Remove ts-node and the unused ts-loader.
+- CI runs on pull requests and on pushes to `main`, on Node 22 and 24.
+
 # 2.0.0
 ## Breaking changes
 - `search()` now returns a clean, denormalised structure: `{ offers, lowestPrices }`.
